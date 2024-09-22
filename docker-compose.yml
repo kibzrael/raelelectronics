@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+  web:
+    build: ./web
+    ports:
+      - 8000:8000
+    depends_on:
+      - auth
+  auth:
+    build: ./auth
+    ports:
+      - 8001:8001
+    depends_on:
+      - db
+  catalog:
+    build: ./catalog
+    ports:
+      - 8002:8002
+    depends_on:
+      - db
+  cart:
+    build: ./cart
+    ports:
+      - 8003:8003
+    depends_on:
+      - db
+  payment:
+    build: ./payment
+    ports:
+      - 8004:8004
+    depends_on:
+      - db
+  order:
+    build: ./order
+    ports:
+      - 8005:8005
+    depends_on:
+      - db
+  notification:
+    build: ./notification
+    ports:
+      - 8006:8006
+    depends_on:
+      - db
+  db:
+    image: postgres:16-alpine
+    ports:
+      - 5432:5432
+    env_file:
+      - ./db.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
