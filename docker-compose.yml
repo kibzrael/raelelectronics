@@ -7,42 +7,60 @@ services:
       - 8000:8000
     depends_on:
       - auth
+      - catalog
+      - cart
+      - payment
+      - order
+    volumes:
+      - ./web:/app
   auth:
     build: ./auth
     ports:
       - 8001:8001
     depends_on:
       - db
+    volumes:
+      - ./auth:/app
   catalog:
     build: ./catalog
     ports:
       - 8002:8002
     depends_on:
       - db
+    volumes:
+      - ./catalog:/app
   cart:
     build: ./cart
     ports:
       - 8003:8003
     depends_on:
       - db
+    volumes:
+      - ./cart:/app
   payment:
     build: ./payment
     ports:
       - 8004:8004
     depends_on:
       - db
+    volumes:
+      - ./payment:/app
   order:
     build: ./order
     ports:
       - 8005:8005
     depends_on:
       - db
+    volumes:
+      - ./order:/app
   notification:
     build: ./notification
     ports:
       - 8006:8006
     depends_on:
       - db
+    volumes:
+      - ./notification:/app
   db:
     image: postgres:16-alpine
     ports:
