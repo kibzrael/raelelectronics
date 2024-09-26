@@ -9,7 +9,9 @@ RUN go mod download
 
 COPY . ./
 
-ENV AIR_PORT=8002
-EXPOSE 8002
+ARG PORT
+
+ENV PORT=${PORT}
+EXPOSE ${PORT}
 
 CMD ["air"]

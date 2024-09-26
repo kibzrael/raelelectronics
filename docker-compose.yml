@@ -27,13 +27,20 @@ services:
     networks:
       - backend
   catalog:
-    build: ./catalog
+    build:
+      context: ./catalog
+      args:
+        PORT: 8001
     ports:
       - 8002:8002
+    env_file:
+      - ./db.env
     depends_on:
       - db
     volumes:
       - ./catalog:/app
+    networks:
+      - backend
   cart:
     build: ./cart
     ports:
