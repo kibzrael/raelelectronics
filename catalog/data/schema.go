@@ -13,7 +13,7 @@ import (
 const Schema = `
 	CREATE TABLE IF NOT EXISTS laptops (
 		uid					varchar(80) PRIMARY KEY,
-		noteb_id			integer NULL,
+		noteb_id			integer NOT NULL UNIQUE,
 		name				varchar(255) NOT NULL,
 		brand				varchar(255) NOT NULL,
 		thumbnail			varchar(255) NOT NULL,
@@ -161,13 +161,17 @@ type LaptopComponent interface {
 }
 
 type CPU struct {
-	Uid             string
-	Laptop          string
-	Model           string  `json:"model"`
-	Architecture    string  `json:"prod"`
-	Lithography     uint64  `json:"lithography,string"`
-	Cache           float64 `json:"cache,string"`
-	BaseSpeed       float64 `json:"base_speed,string" db:"base_speed"`
+	Uid          string
+	Laptop       string
+	Model        string `json:"model"`
+	Architecture string `json:"prod"`
+	// Nanometres (nm)
+	Lithography uint64 `json:"lithography,string"`
+	// Megabytes (MB)
+	Cache float64 `json:"cache,string"`
+	// Megahertz (MHz)
+	BaseSpeed float64 `json:"base_speed,string" db:"base_speed"`
+	// Megahertz (MHz)
 	BoostSpeed      float64 `json:"boost_speed,string" db:"boost_speed"`
 	Cores           int64   `json:"cores,string"`
 	Tdp             int64   `json:"tdp,string"`
@@ -188,17 +192,22 @@ func (c *CPU) Save(tx *sqlx.Tx, l *Laptop) error {
 type GPU struct {
 	Uid          string
 	Laptop       string
-	Producer     string  `json:"prod"`
-	Model        string  `json:"model"`
-	Architecture string  `json:"architecture"`
-	Lithography  uint64  `json:"lithography,string"`
-	BaseSpeed    float64 `json:"base_speed,string" db:"base_speed"`
-	BoostSpeed   float64 `json:"boost_speed,string" db:"boost_speed"`
-	MemorySize   int64   `json:"memory_size,string" db:"memory_size"`
-	MemorySpeed  float64 `json:"memory_speed,string" db:"memory_speed"`
-	MemoryType   string  `json:"memory_type" db:"memory_type"`
-	Tdp          int64   `json:"tdp,string"`
-	OtherInfo    string  `json:"other_info" db:"other_info"`
+	Producer     string `json:"prod"`
+	Model        string `json:"model"`
+	Architecture string `json:"architecture"`
+	// Nanometres (nm)
+	Lithography uint64 `json:"lithography,string"`
+	// Megahertz (MHz)
+	BaseSpeed float64 `json:"base_speed,string" db:"base_speed"`
+	// Megahertz (MHz)
+	BoostSpeed float64 `json:"boost_speed,string" db:"boost_speed"`
+	// Megabytes (MB)
+	MemorySize int64 `json:"memory_size,string" db:"memory_size"`
+	// Megahertz (MHz)
+	MemorySpeed float64 `json:"memory_speed,string" db:"memory_speed"`
+	MemoryType  string  `json:"memory_type" db:"memory_type"`
+	Tdp         int64   `json:"tdp,string"`
+	OtherInfo   string  `json:"other_info" db:"other_info"`
 }
 
 func (g *GPU) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -212,12 +221,16 @@ func (g *GPU) Save(tx *sqlx.Tx, l *Laptop) error {
 }
 
 type Display struct {
-	Uid         string
-	Laptop      string
-	Size        float64 `json:"size,string"`
-	HResolution int64   `json:"horizontal_resolution,string" db:"h_resolution"`
-	VResolution int64   `json:"vertical_resolution,string" db:"v_resolution"`
-	Type        string  `json:"type"`
+	Uid    string
+	Laptop string
+	// Inches
+	Size float64 `json:"size,string"`
+	// Pixels
+	HResolution int64 `json:"horizontal_resolution,string" db:"h_resolution"`
+	// Pixels
+	VResolution int64  `json:"vertical_resolution,string" db:"v_resolution"`
+	Type        string `json:"type"`
+	// Percentage
 	SRGB        float64 `json:"sRGB,string" db:"srgb"`
 	Touchscreen bool
 	OtherInfo   string `json:"other_info" db:"other_info"`
@@ -236,9 +249,11 @@ func (d *Display) Save(tx *sqlx.Tx, l *Laptop) error {
 type Memory struct {
 	Uid    string
 	Laptop string
-	Size   int64   `json:"size,string"`
-	Speed  float64 `json:"speed,string"`
-	Type   string  `json:"type"`
+	// Gigabytes (GB)
+	Size int64 `json:"size,string"`
+	// MB/s
+	Speed float64 `json:"speed,string"`
+	Type  string  `json:"type"`
 }
 
 func (m *Memory) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -252,11 +267,13 @@ func (m *Memory) Save(tx *sqlx.Tx, l *Laptop) error {
 }
 
 type Storage struct {
-	Uid      string
-	Laptop   string
-	Capacity int64  `json:"cap,string"`
-	Speed    int64  `json:"read_speed,string"`
-	Model    string `json:"model"`
+	Uid    string
+	Laptop string
+	// Gigabytes (GB)
+	Capacity int64 `json:"cap,string"`
+	// MB/s
+	Speed int64  `json:"read_speed,string"`
+	Model string `json:"model"`
 }
 
 func (s *Storage) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -270,9 +287,10 @@ func (s *Storage) Save(tx *sqlx.Tx, l *Laptop) error {
 }
 
 type WirelessCard struct {
-	Uid       string
-	Laptop    string
-	Model     string `json:"model"`
+	Uid    string
+	Laptop string
+	Model  string `json:"model"`
+	// MB/s
 	Speed     int64  `json:"speed,string"`
 	OtherInfo string `json:"other_info" db:"other_info"`
 }
@@ -322,14 +340,19 @@ func (p *Port) Save(tx *sqlx.Tx, c *Chassis) error {
 }
 
 type Chassis struct {
-	Uid       string
-	Laptop    string
-	Height    float64 `json:"height_cm,string"`
-	Depth     float64 `json:"depth_cm,string"`
-	Width     float64 `json:"width_cm,string"`
-	Weight    float64 `json:"weight_kg,string"`
-	Colors    []string
-	ports     []Port
+	Uid    string
+	Laptop string
+	// Centimetres (cm)
+	Height float64 `json:"height_cm,string"`
+	// Centimetres (cm)
+	Depth float64 `json:"depth_cm,string"`
+	// Centimetres (cm)
+	Width float64 `json:"width_cm,string"`
+	// Kilograms (kg)
+	Weight float64 `json:"weight_kg,string"`
+	Colors []string
+	ports  []Port
+	// Megapixels (MP)
 	Webcam    float64 `json:"webcam_mp,string"`
 	OtherInfo string  `json:"other_info" db:"other_info"`
 }
@@ -348,10 +371,12 @@ func (c *Chassis) Save(tx *sqlx.Tx, l *Laptop) error {
 }
 
 type Battery struct {
-	Uid       string
-	Laptop    string
-	Capacity  float64 `json:"capacity,string"`
-	Type      string  `json:"cell_type"`
+	Uid    string
+	Laptop string
+	// Watts per hour (WH)
+	Capacity float64 `json:"capacity,string"`
+	Type     string  `json:"cell_type"`
+	// Hours
 	Life      float64
 	OtherInfo string `json:"other_info" db:"other_info"`
 }
@@ -367,15 +392,18 @@ func (b *Battery) Save(tx *sqlx.Tx, l *Laptop) error {
 }
 
 type Laptop struct {
-	Uid          string
-	NotebId      int64 `db:"noteb_id"`
-	Name         string
-	Brand        string
-	Thumbnail    string
-	Images       []string
-	Link         string
-	Launched     string
-	PriceMin     float64 `db:"price_min"`
+	Uid       string
+	NotebId   int64 `db:"noteb_id"`
+	Name      string
+	Brand     string
+	Thumbnail string
+	Images    []string
+	Link      string
+	// Launched date YYYY-MM-DD
+	Launched string
+	// Price in dollars
+	PriceMin float64 `db:"price_min"`
+	// Price in dollars
 	PriceMax     float64 `db:"price_max"`
 	CPU          []CPU
 	GPU          []GPU
@@ -397,6 +425,10 @@ func (l *Laptop) Save(ctx context.Context) error {
 		INSERT INTO laptops (uid, noteb_id, name, brand, thumbnail, link, launched, price_min, price_max) 
 		VALUES (:uid, :noteb_id, :name, :brand, :thumbnail, :link, :launched, :price_min, :price_max)
 	`, l)
+	if err != nil {
+		_ = tx.Rollback()
+		return err
+	}
 	for _, img := range l.Images {
 		_, err = tx.Exec(`
 			INSERT INTO images (uid, laptop, url) VALUES ($1, $2, $3)
@@ -456,7 +488,10 @@ func (l *Laptop) Serialize(data map[string]interface{}) {
 	l.Brand = nameSplit[0]
 	moreResources := data["model_resources"].(map[string]interface{})
 	l.Thumbnail = moreResources["thumbnail"].(string)
-	l.Link = moreResources["official_link"].(string)
+	link := moreResources["official_link"]
+	if link != nil {
+		l.Link = link.(string)
+	}
 	l.Launched, _ = moreResources["launch_date"].(string)
 	l.PriceMin, _ = strconv.ParseFloat(data["config_price_min"].(string), 64)
 	l.PriceMax, _ = strconv.ParseFloat(data["config_price_max"].(string), 64)
@@ -560,12 +595,17 @@ func (l *Laptop) Serialize(data map[string]interface{}) {
 			json.Unmarshal(b, &chassis)
 
 			chassis.Colors = strings.Split(chassisMap["colors"].(string), ",")
-			ports := strings.Split(chassisMap["peripheral_interfaces"].(string), ",")
+			periferals := chassisMap["peripheral_interfaces"].(string)
+			video := chassisMap["video_interfaces"]
+			if video != nil {
+				periferals = strings.Join([]string{periferals, video.(string)}, ",")
+			}
+			ports := strings.Split(periferals, ",")
 			for _, port := range ports {
 				splits := strings.Split(port, "X")
 				if len(splits) > 1 {
 					count, _ := strconv.ParseUint(strings.Trim(splits[0], " "), 10, 64)
-					chassis.ports = append(chassis.ports, Port{Count: count, Type: splits[1]})
+					chassis.ports = append(chassis.ports, Port{Count: count, Type: strings.Trim(splits[1], " ")})
 				}
 			}
 			l.Chassis = append(l.Chassis, chassis)
