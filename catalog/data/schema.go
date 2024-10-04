@@ -594,7 +594,9 @@ func (l *Laptop) Serialize(data map[string]interface{}) {
 			}
 			json.Unmarshal(b, &chassis)
 
-			chassis.Colors = strings.Split(chassisMap["colors"].(string), ",")
+			if chassisMap["colors"] != nil {
+				chassis.Colors = strings.Split(chassisMap["colors"].(string), ",")
+			}
 			periferals := chassisMap["peripheral_interfaces"].(string)
 			video := chassisMap["video_interfaces"]
 			if video != nil {

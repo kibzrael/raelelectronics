@@ -5,14 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"slices"
 	"strings"
 	"sync"
+
+	"github.com/jmoiron/sqlx"
 )
 
-var BRANDS []string = []string{"Lenovo", "HP", "Dell", "Apple", "Samsung"}
+var BRANDS []string = []string{"Lenovo", "HP", "Dell", "Apple", "Samsung", "Asus", "MSI", "Acer", "Microsoft"} //
 
-func SeedLaptops(ctx context.Context) {
+func SeedLaptops(ctx context.Context, res http.ResponseWriter, req *http.Request) {
+	log.Println("Seeding Laptops")
 	wg := sync.WaitGroup{}
 	ctx = context.WithValue(ctx, WG_CONTEXT, &wg)
 
@@ -22,11 +27,12 @@ func SeedLaptops(ctx context.Context) {
 	}
 
 	wg.Wait()
+	fmt.Fprintln(res, "Success")
 }
 
 func ListLaptops(ctx context.Context, brand string) {
 	url := "https://noteb.com/api/webservice.php"
-	payload := strings.NewReader(fmt.Sprintf(`apikey=%s&method=list_models&param[model_id]=&param[model_name]=%s`, API_KEY, brand))
+	payload := strings.NewReader(fmt.Sprintf(`apikey=%s&method=list_models&param[model_id]=&param[model_name]=%s`, "112233aabbcc", brand))
 
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", url, payload)
@@ -65,6 +71,22 @@ func ListLaptops(ctx context.Context, brand string) {
 	wgDetail := sync.WaitGroup{}
 	ctx = context.WithValue(ctx, WG_DETAIL_CONTEXT, &wgDetail)
 
+	db := ctx.Value(DB_CONTEXT).(*sqlx.DB)
+	rows, err := db.Queryx("SELECT noteb_id FROM laptops WHERE brand = $1", brand)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for rows.Next() {
+		var value uint
+		if err = rows.Scan(&value); err == nil {
+			i := slices.Index(laptopIds, value)
+			if i != -1 {
+				laptopIds = append(laptopIds[:i], laptopIds[i+1:]...)
+			}
+		}
+	}
+
 	for _, id := range laptopIds {
 		wgDetail.Add(1)
 		go LaptopDetails(ctx, id)
@@ -76,7 +98,7 @@ func ListLaptops(ctx context.Context, brand string) {
 
 func LaptopDetails(ctx context.Context, id uint) {
 	url := "https://noteb.com/api/webservice.php"
-	payload := strings.NewReader(fmt.Sprintf(`apikey=%s&method=get_model_info_all&param[model_id]=%v`, API_KEY, id))
+	payload := strings.NewReader(fmt.Sprintf(`apikey=%s&method=get_model_info_all&param[model_id]=%v`, "112233aabbcc", id))
 
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", url, payload)
