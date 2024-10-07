@@ -30,6 +30,7 @@ func main() {
 	catalogRouter := http.ServeMux{}
 	catalogRouter.Handle("GET /feed", utils.CatalogHandler(ctx, routes.FeedHandler))
 	catalogRouter.Handle("POST /seed", utils.CatalogHandler(ctx, data.SeedLaptops))
+	catalogRouter.Handle("GET /{uid}", utils.CatalogHandler(ctx, routes.DetailsHandler))
 
 	server := http.Server{
 		Addr:    ":" + os.Getenv("PORT"),

@@ -2,8 +2,6 @@ package data
 
 import (
 	"context"
-	"encoding/json"
-	"strconv"
 	"strings"
 	"time"
 
@@ -360,7 +358,7 @@ type Chassis struct {
 	// Kilograms (kg)
 	Weight float64 `json:"weight_kg,string"`
 	Colors []string
-	ports  []Port
+	Ports  []Port
 	// Megapixels (MP)
 	Webcam    float64   `json:"webcam_mp,string"`
 	OtherInfo string    `json:"other_info" db:"other_info"`
@@ -374,7 +372,7 @@ func (c *Chassis) Save(tx *sqlx.Tx, l *Laptop) error {
 		INSERT INTO chassis (uid, laptop, height, depth, width, weight, colors, webcam, other_info) 
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	`, c.Uid, c.Laptop, c.Height, c.Depth, c.Width, c.Weight, strings.Join(c.Colors, ","), c.Webcam, c.OtherInfo)
-	for _, port := range c.ports {
+	for _, port := range c.Ports {
 		err = port.Save(tx, c)
 	}
 	return err
@@ -489,166 +487,4 @@ func (l *Laptop) Save(ctx context.Context) error {
 	}
 	err = tx.Commit()
 	return err
-}
-
-func (l *Laptop) Serialize(data map[string]interface{}) {
-	modelInfoList := data["model_info"].([]interface{})
-	modelInfo := modelInfoList[0].(map[string]interface{})
-	l.NotebId = int64(modelInfo["id"].(float64))
-	l.Name = modelInfo["noteb_name"].(string)
-	nameSplit := strings.Split(modelInfo["noteb_name"].(string), " ")
-	l.Brand = nameSplit[0]
-	moreResources := data["model_resources"].(map[string]interface{})
-	l.Thumbnail = moreResources["thumbnail"].(string)
-	link := moreResources["official_link"]
-	if link != nil {
-		l.Link = link.(string)
-	}
-	l.Launched, _ = moreResources["launch_date"].(string)
-	l.PriceMin, _ = strconv.ParseFloat(data["config_price_min"].(string), 64)
-	l.PriceMax, _ = strconv.ParseFloat(data["config_price_max"].(string), 64)
-	for key, val := range moreResources {
-		if strings.HasPrefix(key, "image_") {
-			l.Images = append(l.Images, val.(string))
-		}
-	}
-	cpus := data["cpu"].(map[string]interface{})
-	for _, val := range cpus {
-		_, ok := val.(map[string]interface{})
-		if ok {
-			var cpu CPU
-			b, err := json.Marshal(val)
-			if err != nil {
-				panic(err)
-			}
-			json.Unmarshal(b, &cpu)
-			l.CPU = append(l.CPU, cpu)
-		}
-	}
-	gpus := data["gpu"].(map[string]interface{})
-	for _, val := range gpus {
-		_, ok := val.(map[string]interface{})
-		if ok {
-			var gpu GPU
-			b, err := json.Marshal(val)
-			if err != nil {
-				panic(err)
-			}
-			json.Unmarshal(b, &gpu)
-			l.GPU = append(l.GPU, gpu)
-		}
-	}
-	displays := data["display"].(map[string]interface{})
-	for _, val := range displays {
-		_, ok := val.(map[string]interface{})
-		if ok {
-			var display Display
-			b, err := json.Marshal(val)
-			if err != nil {
-				panic(err)
-			}
-			json.Unmarshal(b, &display)
-			displayMap, ok := val.(map[string]interface{})
-			if ok {
-				display.Touchscreen = displayMap["touch"] != "no"
-			}
-			l.Display = append(l.Display, display)
-		}
-	}
-	memorys := data["memory"].(map[string]interface{})
-	for _, val := range memorys {
-		_, ok := val.(map[string]interface{})
-		if ok {
-			var memory Memory
-			b, err := json.Marshal(val)
-			if err != nil {
-				panic(err)
-			}
-			json.Unmarshal(b, &memory)
-			l.Memory = append(l.Memory, memory)
-		}
-	}
-	storages := data["primary_storage"].(map[string]interface{})
-	for _, val := range storages {
-		_, ok := val.(map[string]interface{})
-		if ok {
-			var storage Storage
-			b, err := json.Marshal(val)
-			if err != nil {
-				panic(err)
-			}
-			json.Unmarshal(b, &storage)
-			l.Storage = append(l.Storage, storage)
-		}
-	}
-	batterys := data["battery"].(map[string]interface{})
-	for _, val := range batterys {
-		_, ok := val.(map[string]interface{})
-		if ok {
-			var battery Battery
-			b, err := json.Marshal(val)
-			if err != nil {
-				panic(err)
-			}
-			json.Unmarshal(b, &battery)
-			battery.Life, _ = strconv.ParseFloat(data["battery_life_raw"].(string), 64)
-			l.Battery = append(l.Battery, battery)
-		}
-	}
-	chassiss := data["chassis"].(map[string]interface{})
-	for _, val := range chassiss {
-		chassisMap, ok := val.(map[string]interface{})
-		if ok {
-			var chassis Chassis
-			b, err := json.Marshal(val)
-			if err != nil {
-				panic(err)
-			}
-			json.Unmarshal(b, &chassis)
-
-			if chassisMap["colors"] != nil {
-				chassis.Colors = strings.Split(chassisMap["colors"].(string), ",")
-			}
-			periferals := chassisMap["peripheral_interfaces"].(string)
-			video := chassisMap["video_interfaces"]
-			if video != nil {
-				periferals = strings.Join([]string{periferals, video.(string)}, ",")
-			}
-			ports := strings.Split(periferals, ",")
-			for _, port := range ports {
-				splits := strings.Split(port, "X")
-				if len(splits) > 1 {
-					count, _ := strconv.ParseUint(strings.Trim(splits[0], " "), 10, 64)
-					chassis.ports = append(chassis.ports, Port{Count: count, Type: strings.Trim(splits[1], " ")})
-				}
-			}
-			l.Chassis = append(l.Chassis, chassis)
-		}
-	}
-	wireless := data["wireless"].(map[string]interface{})
-	for _, val := range wireless {
-		_, ok := val.(map[string]interface{})
-		if ok {
-			var wirelessCard WirelessCard
-			b, err := json.Marshal(val)
-			if err != nil {
-				panic(err)
-			}
-			json.Unmarshal(b, &wirelessCard)
-			l.WirelessCard = append(l.WirelessCard, wirelessCard)
-		}
-	}
-	motherboards := data["motherboard"].(map[string]interface{})
-	for _, val := range motherboards {
-		_, ok := val.(map[string]interface{})
-		if ok {
-			var motherboard Motherboard
-			b, err := json.Marshal(val)
-			if err != nil {
-				panic(err)
-			}
-			json.Unmarshal(b, &motherboard)
-			l.Motherboard = append(l.Motherboard, motherboard)
-		}
-	}
 }
