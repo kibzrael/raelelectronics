@@ -12,16 +12,15 @@ import (
 	"sync"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/kibzrael/raelelectronics/catalog/utils"
 )
-
-var BRANDS []string = []string{"Lenovo", "HP", "Dell", "Apple", "Samsung", "Asus", "MSI", "Acer", "Microsoft"} //
 
 func SeedLaptops(ctx context.Context, res http.ResponseWriter, req *http.Request) {
 	log.Println("Seeding Laptops")
 	wg := sync.WaitGroup{}
 	ctx = context.WithValue(ctx, WG_CONTEXT, &wg)
 
-	for _, b := range BRANDS {
+	for _, b := range utils.BRANDS {
 		wg.Add(1)
 		go ListLaptops(ctx, b)
 	}
@@ -32,7 +31,7 @@ func SeedLaptops(ctx context.Context, res http.ResponseWriter, req *http.Request
 
 func ListLaptops(ctx context.Context, brand string) {
 	url := "https://noteb.com/api/webservice.php"
-	payload := strings.NewReader(fmt.Sprintf(`apikey=%s&method=list_models&param[model_id]=&param[model_name]=%s`, "112233aabbcc", brand))
+	payload := strings.NewReader(fmt.Sprintf(`apikey=%s&method=list_models&param[model_id]=&param[model_name]=%s`, API_KEY, brand))
 
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", url, payload)
@@ -98,7 +97,7 @@ func ListLaptops(ctx context.Context, brand string) {
 
 func LaptopDetails(ctx context.Context, id uint) {
 	url := "https://noteb.com/api/webservice.php"
-	payload := strings.NewReader(fmt.Sprintf(`apikey=%s&method=get_model_info_all&param[model_id]=%v`, "112233aabbcc", id))
+	payload := strings.NewReader(fmt.Sprintf(`apikey=%s&method=get_model_info_all&param[model_id]=%v`, API_KEY, id))
 
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", url, payload)

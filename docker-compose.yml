@@ -30,7 +30,7 @@ services:
     build:
       context: ./catalog
       args:
-        PORT: 8001
+        PORT: 8002
     ports:
       - 8002:8002
     env_file:

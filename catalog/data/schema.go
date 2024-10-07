@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -172,11 +173,12 @@ type CPU struct {
 	// Megahertz (MHz)
 	BaseSpeed float64 `json:"base_speed,string" db:"base_speed"`
 	// Megahertz (MHz)
-	BoostSpeed      float64 `json:"boost_speed,string" db:"boost_speed"`
-	Cores           int64   `json:"cores,string"`
-	Tdp             int64   `json:"tdp,string"`
-	IntegratedVideo string  `json:"integrated_video" db:"integrated_video"`
-	OtherInfo       string  `json:"other_info" db:"other_info"`
+	BoostSpeed      float64   `json:"boost_speed,string" db:"boost_speed"`
+	Cores           int64     `json:"cores,string"`
+	Tdp             int64     `json:"tdp,string"`
+	IntegratedVideo string    `json:"integrated_video" db:"integrated_video"`
+	OtherInfo       string    `json:"other_info" db:"other_info"`
+	CreatedAt       time.Time `db:"created_at"`
 }
 
 func (c *CPU) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -204,10 +206,11 @@ type GPU struct {
 	// Megabytes (MB)
 	MemorySize int64 `json:"memory_size,string" db:"memory_size"`
 	// Megahertz (MHz)
-	MemorySpeed float64 `json:"memory_speed,string" db:"memory_speed"`
-	MemoryType  string  `json:"memory_type" db:"memory_type"`
-	Tdp         int64   `json:"tdp,string"`
-	OtherInfo   string  `json:"other_info" db:"other_info"`
+	MemorySpeed float64   `json:"memory_speed,string" db:"memory_speed"`
+	MemoryType  string    `json:"memory_type" db:"memory_type"`
+	Tdp         int64     `json:"tdp,string"`
+	OtherInfo   string    `json:"other_info" db:"other_info"`
+	CreatedAt   time.Time `db:"created_at"`
 }
 
 func (g *GPU) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -233,7 +236,8 @@ type Display struct {
 	// Percentage
 	SRGB        float64 `json:"sRGB,string" db:"srgb"`
 	Touchscreen bool
-	OtherInfo   string `json:"other_info" db:"other_info"`
+	OtherInfo   string    `json:"other_info" db:"other_info"`
+	CreatedAt   time.Time `db:"created_at"`
 }
 
 func (d *Display) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -252,8 +256,9 @@ type Memory struct {
 	// Gigabytes (GB)
 	Size int64 `json:"size,string"`
 	// MB/s
-	Speed float64 `json:"speed,string"`
-	Type  string  `json:"type"`
+	Speed     float64   `json:"speed,string"`
+	Type      string    `json:"type"`
+	CreatedAt time.Time `db:"created_at"`
 }
 
 func (m *Memory) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -272,8 +277,9 @@ type Storage struct {
 	// Gigabytes (GB)
 	Capacity int64 `json:"cap,string"`
 	// MB/s
-	Speed int64  `json:"read_speed,string"`
-	Model string `json:"model"`
+	Speed     int64     `json:"read_speed,string"`
+	Model     string    `json:"model"`
+	CreatedAt time.Time `db:"created_at"`
 }
 
 func (s *Storage) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -291,8 +297,9 @@ type WirelessCard struct {
 	Laptop string
 	Model  string `json:"model"`
 	// MB/s
-	Speed     int64  `json:"speed,string"`
-	OtherInfo string `json:"other_info" db:"other_info"`
+	Speed     int64     `json:"speed,string"`
+	OtherInfo string    `json:"other_info" db:"other_info"`
+	CreatedAt time.Time `db:"created_at"`
 }
 
 func (w *WirelessCard) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -306,10 +313,11 @@ func (w *WirelessCard) Save(tx *sqlx.Tx, l *Laptop) error {
 }
 
 type Motherboard struct {
-	Uid     string
-	Laptop  string
-	Ram     string `json:"ram_slots"`
-	Storage string `json:"storage_slots"`
+	Uid       string
+	Laptop    string
+	Ram       string    `json:"ram_slots"`
+	Storage   string    `json:"storage_slots"`
+	CreatedAt time.Time `db:"created_at"`
 }
 
 func (m *Motherboard) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -323,10 +331,11 @@ func (m *Motherboard) Save(tx *sqlx.Tx, l *Laptop) error {
 }
 
 type Port struct {
-	Uid     string
-	Chassis string
-	Count   uint64
-	Type    string
+	Uid       string
+	Chassis   string
+	Count     uint64
+	Type      string
+	CreatedAt time.Time `db:"created_at"`
 }
 
 func (p *Port) Save(tx *sqlx.Tx, c *Chassis) error {
@@ -353,8 +362,9 @@ type Chassis struct {
 	Colors []string
 	ports  []Port
 	// Megapixels (MP)
-	Webcam    float64 `json:"webcam_mp,string"`
-	OtherInfo string  `json:"other_info" db:"other_info"`
+	Webcam    float64   `json:"webcam_mp,string"`
+	OtherInfo string    `json:"other_info" db:"other_info"`
+	CreatedAt time.Time `db:"created_at"`
 }
 
 func (c *Chassis) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -378,7 +388,8 @@ type Battery struct {
 	Type     string  `json:"cell_type"`
 	// Hours
 	Life      float64
-	OtherInfo string `json:"other_info" db:"other_info"`
+	OtherInfo string    `json:"other_info" db:"other_info"`
+	CreatedAt time.Time `db:"created_at"`
 }
 
 func (b *Battery) Save(tx *sqlx.Tx, l *Laptop) error {
@@ -393,8 +404,8 @@ func (b *Battery) Save(tx *sqlx.Tx, l *Laptop) error {
 
 type Laptop struct {
 	Uid       string
-	NotebId   int64 `db:"noteb_id"`
-	Name      string
+	NotebId   int64  `db:"noteb_id"`
+	Name      string `db:"name"`
 	Brand     string
 	Thumbnail string
 	Images    []string
@@ -414,6 +425,7 @@ type Laptop struct {
 	Motherboard  []Motherboard
 	Chassis      []Chassis
 	Battery      []Battery
+	CreatedAt    time.Time `db:"created_at"`
 }
 
 func (l *Laptop) Save(ctx context.Context) error {
