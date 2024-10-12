@@ -1,6 +1,9 @@
 services:
   web:
-    build: ./web
+    build:
+      context: ./web
+      args:
+        PORT: 8000
     ports:
       - 8000:8000
     depends_on:
@@ -11,6 +14,8 @@ services:
       - order
     volumes:
       - ./web:/app
+    networks:
+      - backend
   auth:
     build:
       context: ./auth
