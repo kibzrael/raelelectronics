@@ -1,0 +1,97 @@
+{{define "footer"}}
+<footer class="bg-primary-900 text-gray-300 w-full pt-10 pb-4 px-4">
+  <section
+    class="relative container grid grid-cols-2 lg:grid-cols-5 gap-y-8 gap-x-4 pb-16">
+    <ul class="z-[1] flex flex-col gap-2">
+      <h3 class="font-h6 text-white mb-2">Company</h3>
+      <li><a href="#">About us</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Returns</a></li>
+      <li><a href="#">Order status</a></li>
+    </ul>
+    <ul class="z-[1] flex flex-col gap-2">
+      <h3 class="font-h6 text-white mb-2">Info</h3>
+      <li><a href="#">How it works?</a></li>
+      <li><a href="#">Our promises</a></li>
+      <li><a href="#">FAQ</a></li>
+    </ul>
+    <ul class="z-[1] flex flex-col gap-2 col-span-2 md:col-span-1">
+      <h3 class="font-h6 text-white mb-2">Contact Us</h3>
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded">location_on</span>
+        123 Main Street, Anytown,USA
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded">call</span>
+        +1 (555) 123-4567
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded">alternate_email</span>
+        support@gmail.com
+      </div>
+    </ul>
+    <section
+      class="z-[1] text-white flex flex-col gap-2 col-span-2 md:col-span-1 lg:col-span-2 ml-auto max-w-full lg:max-w-md">
+      <h3 class="font-h6 mb-2">Sign up for News and updates</h3>
+      <div class="border-2 border-white p-2 flex items-center gap-2 rounded-lg">
+        <span class="material-symbols-rounded !text-3xl">person</span>
+        <input
+          placeholder="Email Address"
+          type="email"
+          class="bg-transparent font-body-lg flex-1 min-w-0 outline-none" />
+        <button class="icon-button">
+          <span class="material-symbols-rounded !text-white !text-3xl"
+            >chevron_right</span
+          >
+        </button>
+      </div>
+    </section>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1171"
+      height="205"
+      viewBox="0 0 1171 205"
+      fill="none"
+      style="
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 0;
+      ">
+      <g opacity="0.7" filter="url(#filter0_f_4290_5147)">
+        <path
+          d="M1003 380.5C1003 480.187 823.242 561 601.5 561C379.758 561 200 480.187 200 380.5C200 280.813 379.758 200 601.5 200C823.242 200 1003 280.813 1003 380.5Z"
+          fill="#0951BE" />
+      </g>
+      <defs>
+        <filter
+          id="filter0_f_4290_5147"
+          x="0"
+          y="0"
+          width="1203"
+          height="761"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB">
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="BackgroundImageFix"
+            result="shape" />
+          <feGaussianBlur
+            stdDeviation="100"
+            result="effect1_foregroundBlur_4290_5147" />
+        </filter>
+      </defs>
+    </svg>
+  </section>
+  <section class="container flex flex-wrap gap-8 p-4">
+    <span class="mr-auto">&copy; Copyright 2024</span>
+
+    <a href="#">Cookie Settings</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms and Conditions</a>
+  </section>
+</footer>
+{{end}}

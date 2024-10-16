@@ -60,7 +60,7 @@ func FeedHandler(ctx context.Context, res http.ResponseWriter, req *http.Request
 				LEFT JOIN storages on laptops.uid = storages.laptop
 				LEFT JOIN batteries on laptops.uid = batteries.laptop
 			%s
-			ORDER BY laptops.uid, storages.capacity ASC) l
+			ORDER BY laptops.uid, memorys.size ASC, storages.capacity ASC) l
 		ORDER BY %s
 		LIMIT 20 OFFSET 0
 	`, filters, sort)

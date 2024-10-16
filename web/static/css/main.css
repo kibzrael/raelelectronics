@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: "Inter";
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+*::-webkit-scrollbar-thumb {
+  background: #aaaaaa6a;
+  background-clip: padding-box;
+  border: 4px solid rgba(0, 0, 0, 0);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+*::-webkit-scrollbar-thumb:hover {
+  background: #aaaaaa96;
+  background-clip: padding-box;
+}
+
+.container {
+  @apply max-w-screen-xl mx-auto;
+}
+
+.product-brand {
+  @apply w-full flex flex-col px-5 pb-4 items-center gap-3 rounded-lg bg-white shadow-shadow1 font-caption-lg;
+}
+
+.product-brand img {
+  @apply w-full aspect-square object-contain py-[20%];
+}
+
+.icon-button {
+  transition: all 200ms ease-in;
+  @apply flex w-10 h-10 hover:bg-black/10 text-gray-700 hover:text-black rounded-full items-center justify-center;
+}
+
+.icon-button .material-symbols-rounded {
+  @apply text-3xl;
+}
+
+.btn-lg {
+  @apply p-4 rounded-lg font-button-lg flex items-center justify-center;
+}
+
+.btn-primary {
+  @apply bg-primary text-white;
+}
+
+.btn-secondary {
+  @apply bg-secondary text-white;
+}

@@ -4,6 +4,7 @@ import (
 	"embed"
 	"io"
 	"io/fs"
+	"log"
 	"strings"
 	"text/template"
 
@@ -15,7 +16,11 @@ type TemplateRegistry struct {
 }
 
 func (t *TemplateRegistry) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	return t.templates.ExecuteTemplate(w, name, data)
+	err := t.templates.ExecuteTemplate(w, name, data)
+	if err != nil {
+		log.Println(err)
+	}
+	return err
 }
 
 func NewTemplateRenderer(e *echo.Echo, resources embed.FS) {

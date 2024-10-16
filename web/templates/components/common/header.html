@@ -1,0 +1,39 @@
+{{define "header"}}
+<style>
+  nav a {
+    font-weight: 300;
+    transition: all 200ms ease-in;
+  }
+  nav a:hover {
+    font-weight: 500;
+    transform: scale(1.05);
+  }
+</style>
+
+<header
+  class="sticky top-0 z-10 flex items-center justify-between px-4 py-2 bg-white border-b border-[rgba(12,104,244,0.30)];">
+  <img src="/static/images/logo.svg" class="h-16 w-auto" />
+
+  <nav class="hidden md:inline-flex">
+    <ul class="flex gap-8 font-body-lg">
+      <a href="/home"><li>Home</li></a>
+      <a href="/products"><li>Products</li></a>
+      <a href="/blog"><li>Blog</li></a>
+      <a href="/faq"><li>FAQs</li></a>
+      <a href="/contact"><li>Contact Us</li></a>
+    </ul>
+  </nav>
+
+  <div class="flex gap-4 items-center">
+    <button class="icon-button">
+      <span class="material-symbols-rounded"> search </span>
+    </button>
+    <button class="icon-button">
+      <span class="material-symbols-rounded"> shopping_bag </span>
+    </button>
+    <button class="icon-button">
+      <span class="material-symbols-rounded"> person </span>
+    </button>
+  </div>
+</header>
+{{end}}
