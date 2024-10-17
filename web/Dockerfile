@@ -14,4 +14,4 @@ ARG PORT
 ENV PORT=${PORT}
 EXPOSE ${PORT}
 
-CMD ["air"]
+CMD ["air", "-c", ".air.toml"]

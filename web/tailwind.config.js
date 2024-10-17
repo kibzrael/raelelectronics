@@ -54,7 +54,7 @@ module.exports = {
         ".font-caption-lg": { "@apply font-medium text-base md:text-lg": {} },
         ".font-caption-md": { "@apply font-medium text-sm md:text-base": {} },
         ".font-caption-sm": { "@apply font-medium text-xs md:text-sm": {} },
-        ".font-button-lg": { "@apply font-medium text-base md:text-lg": {} },
+        ".font-button-lg": { "@apply font-semibold text-base md:text-lg": {} },
         ".font-button-sm": { "@apply font-medium text-sm md:text-base": {} },
         ".font-overline-lg": { "@apply text-base md:text-base font-light": {} },
         ".font-overline-sm": { "@apply text-xs md:text-xs font-light": {} },

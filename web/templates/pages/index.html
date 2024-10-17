@@ -23,30 +23,30 @@
       </div>
 
       <section class="grid grid-cols-3 md:grid-cols-6 gap-3 md:gap-6 p-4">
-        <div class="product-brand">
+        <a href="/feed?brand=" class="product-brand">
           <img src="/static/images/brands/lenovo.svg" alt="Hero image" />
           <span>Lenovo</span>
-        </div>
-        <div class="product-brand">
+        </a>
+        <a href="/feed?brand=" class="product-brand">
           <img src="/static/images/brands/apple.svg" alt="Hero image" />
           <span>Apple</span>
-        </div>
-        <div class="product-brand">
+        </a>
+        <a href="/feed?brand=" class="product-brand">
           <img src="/static/images/brands/hp.svg" alt="Hero image" />
           <span>HP</span>
-        </div>
-        <div class="product-brand">
+        </a>
+        <a href="/feed?brand=" class="product-brand">
           <img src="/static/images/brands/msi.svg" alt="Hero image" />
           <span>MSI</span>
-        </div>
-        <div class="product-brand">
+        </a>
+        <a href="/feed?brand=" class="product-brand">
           <img src="/static/images/brands/dell.svg" alt="Hero image" />
           <span>Dell</span>
-        </div>
-        <div class="product-brand">
+        </a>
+        <a href="/feed?brand=" class="product-brand">
           <img src="/static/images/brands/asus.svg" alt="Hero image" />
           <span>Asus</span>
-        </div>
+        </a>
       </section>
 
       <section
@@ -103,7 +103,7 @@
           {{range .Featured}}
           <a
             href="/l/{{.Uid}}"
-            class="group bg-white rounded-lg shadow-shadow1 flex flex-col gap-2 w-full p-4 hover:shadow-black/25 hover:rounded-2xl transition-all duration-700 md:last:hidden lg:last:flex">
+            class="group bg-white rounded-lg shadow-shadow1 flex flex-col gap-2 w-full p-4 hover:shadow-black/20 hover:-translate-y-3 hover:rounded-2xl transition-all duration-700 md:last:hidden lg:last:flex">
             <img
               src="{{.Thumbnail}}"
               alt="Laptop Thumbnail"
