@@ -34,11 +34,19 @@
 }
 
 .product-brand {
-  @apply w-full flex flex-col px-5 pb-4 items-center gap-3 rounded-lg bg-white shadow-shadow1 font-caption-lg hover:text-secondary hover:rounded-2xl hover:shadow-shadow2 transition-all duration-300;
+  @apply w-full flex flex-col px-5 pb-4 items-center gap-3 rounded-lg bg-white shadow-shadow1 font-caption-lg hover:text-secondary hover:rounded-2xl hover:shadow-shadow2 transition-all duration-300 overflow-hidden;
+}
+
+.product-brand.sm {
+  @apply gap-0 px-3 pb-3;
 }
 
 .product-brand img {
   @apply w-full aspect-square object-contain py-[20%];
+}
+
+.product-brand span {
+  @apply w-full overflow-hidden text-ellipsis;
 }
 
 .icon-button {
@@ -51,7 +59,7 @@
 }
 
 .btn-lg {
-  @apply p-4 rounded-lg font-button-lg flex items-center justify-center transition-all duration-300;
+  @apply p-4 rounded-lg font-button-lg flex items-center gap-3 justify-center transition-all duration-300;
 }
 
 .btn-primary {
@@ -60,4 +68,24 @@
 
 .btn-secondary {
   @apply bg-secondary text-white hover:brightness-90;
+}
+
+.btn-text {
+  @apply text-primary hover:brightness-90;
+}
+
+.chip {
+  @apply flex p-1 md:p-2 pl-3 gap-3 md:gap-4 items-center border-2 border-gray-300 font-button-sm md:font-button-lg rounded-lg;
+}
+
+.chip .icon-button {
+  @apply w-6 h-6 md:w-7 md:h-7 rounded-lg border border-gray-400;
+}
+
+.chip .material-symbols-rounded {
+  @apply !text-base md:!text-xl text-gray-500;
+}
+
+label:has(input) {
+  cursor: pointer;
 }

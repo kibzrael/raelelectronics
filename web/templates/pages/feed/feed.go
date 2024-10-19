@@ -8,9 +8,37 @@ import (
 
 	c "github.com/kibzrael/raelelectronics/common/api/catalog"
 	"github.com/kibzrael/raelelectronics/web/services"
+	"github.com/kibzrael/raelelectronics/web/utils"
 	"github.com/labstack/echo/v4"
 	"google.golang.org/grpc"
 )
+
+type Feed struct {
+	Laptops []*c.LaptopCard
+
+	Colors       []utils.Color
+	DisplayTypes []string
+	DisplaySizes []uint64
+	GPUBrands    []string
+	CPUs         []string
+	MemorySizes  []uint64
+	StorageSizes []uint64
+	BrandFilters []utils.BrandFilter
+}
+
+func newFeedData() Feed {
+	return Feed{
+		Laptops:      []*c.LaptopCard{},
+		Colors:       utils.Colors,
+		DisplayTypes: utils.DisplayTypes,
+		DisplaySizes: utils.DisplaySizes,
+		GPUBrands:    utils.GPUBrands,
+		CPUs:         utils.CPUs,
+		MemorySizes:  utils.MemorySizes,
+		StorageSizes: utils.StorageSizes,
+		BrandFilters: utils.BrandFilters,
+	}
+}
 
 func FeedPageHander(e echo.Context) error {
 	conn := e.Get(services.CATALOG_CONTEXT).(*grpc.ClientConn)
@@ -19,13 +47,16 @@ func FeedPageHander(e echo.Context) error {
 
 	query := e.QueryParams()
 
-	data, err := catalog.LaptopFeed(context.Background(), &c.FeedRequest{
+	response, err := catalog.LaptopFeed(context.Background(), &c.FeedRequest{
 		Sort:    feedSort(query),
 		Filters: feedFilters(query),
 	})
 	if err != nil {
 		log.Println("failed to fetch laptop feed:", err)
 	}
+
+	data := newFeedData()
+	data.Laptops = response.Laptops
 
 	return e.Render(http.StatusOK, "feed.html", data)
 }

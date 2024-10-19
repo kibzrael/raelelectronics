@@ -13,15 +13,16 @@ import (
 	"sync"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/kibzrael/raelelectronics/catalog/utils"
 )
+
+var BRANDS []string = []string{"Lenovo", "HP", "Dell", "Apple", "Samsung", "Asus", "MSI", "Acer", "Microsoft", "Alienware", "Huawei", "LG", "Gigabyte", "Razer", "Framework", "Fujitsu", "Xiaomi", "Google"}
 
 func SeedLaptops(ctx context.Context, res http.ResponseWriter, req *http.Request) {
 	log.Println("Seeding Laptops")
 	wg := sync.WaitGroup{}
 	ctx = context.WithValue(ctx, WG_CONTEXT, &wg)
 
-	for _, b := range utils.BRANDS {
+	for _, b := range BRANDS {
 		wg.Add(1)
 		go ListLaptops(ctx, b)
 	}

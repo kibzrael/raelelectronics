@@ -4,6 +4,164 @@
   <body>
     <main class="container flex flex-col gap-6 md:gap-12">
       {{template "header" .}}
+
+      <section
+        class="grid grid-cols-4 md:grid-cols-8 gap-3 lg:gap-6 p-4 -mt-4 md:-mt-10">
+        {{ range .BrandFilters }}
+        <button class="product-brand sm">
+          <img src="{{.Logo}}" alt="Hero image" />
+          <span>{{.Name}}</span>
+        </button>
+        {{ end }}
+      </section>
+
+      <section class="flex gap-2 md:gap-4 mx-4 md:-my-2">
+        <div class="chip">
+          <span>Silver</span>
+          <button class="icon-button">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
+        <div class="chip">
+          <span>Apple</span>
+          <button class="icon-button">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
+        <div class="chip">
+          <span>8GB ram</span>
+          <button class="icon-button">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
+      </section>
+
+      <div
+        class="relative grid grid-cols-1 md:grid-cols-[16rem,1fr] gap-8 mx-4">
+        <form class="hidden md:flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-h5">Filters</h3>
+            <button type="reset" class="btn-lg btn-text">Clear all</button>
+          </div>
+          <section class="flex flex-col gap-4">
+            <h4 class="font-body-xl">Price</h4>
+            <div class="flex gap-4 items-center">
+              <input
+                type="number"
+                placeholder="Min"
+                class="flex-1 min-w-0 rounded-lg border-2 border-gray-300 px-4 py-3 placeholder:font-body-xl" />
+              <span class="font-caption-lg">-</span>
+              <input
+                type="number"
+                placeholder="Max"
+                class="flex-1 min-w-0 rounded-lg border-2 border-gray-300 px-4 py-3 placeholder:font-body-xl" />
+            </div>
+          </section>
+          {{template "separator" .}}
+          <section class="flex flex-col gap-4">
+            <h4 class="font-body-xl">Screen Size</h4>
+            {{ range .DisplaySizes }}
+            <label for="size{{.}}" class="flex gap-4 font-body-lg">
+              <input
+                type="checkbox"
+                name="size"
+                value="{{.}}"
+                class="w-5"
+                id="size{{.}}" />
+              {{.}}" - {{.}}.9"
+            </label>
+            {{ end }}
+          </section>
+          {{template "separator" .}}
+          <!-- TODO: Implement DisplayTime filter -->
+          <section class="flex flex-col gap-4">
+            <h4 class="font-body-xl">Display Type</h4>
+            {{ range .DisplayTypes }}
+            <label for="display{{.}}" class="flex gap-4 font-body-lg">
+              <input
+                type="checkbox"
+                name="display"
+                value="{{.}}"
+                class="w-5"
+                id="display{{.}}" />
+              {{.}}
+            </label>
+            {{ end }}
+          </section>
+          {{template "separator" .}}
+          <section class="flex flex-col gap-4">
+            <h4 class="font-body-xl">Memory</h4>
+            {{ range .MemorySizes }}
+            <label for="memory{{.}}" class="flex gap-4 font-body-lg">
+              <input
+                type="checkbox"
+                name="memory"
+                value="{{.}}"
+                class="w-5"
+                id="memory{{.}}" />
+              {{.}} GB
+            </label>
+            {{ end }}
+          </section>
+          {{template "separator" .}}
+          <section class="flex flex-col gap-4">
+            <h4 class="font-body-xl">Storage</h4>
+            {{ range .StorageSizes }}
+            <label for="storage{{.}}" class="flex gap-4 font-body-lg">
+              <input
+                type="checkbox"
+                name="storage"
+                value="{{.}}"
+                class="w-5"
+                id="storage{{.}}" />
+              {{.}} GB
+            </label>
+            {{ end }}
+          </section>
+          {{template "separator" .}}
+          <section class="flex flex-col gap-4">
+            <h4 class="font-body-xl">Processor</h4>
+            {{ range .CPUs }}
+            <label for="cpu{{.}}" class="flex gap-4 font-body-lg">
+              <input
+                type="checkbox"
+                name="cpu"
+                value="{{.}}"
+                class="w-5"
+                id="cpu{{.}}" />
+              {{.}}
+            </label>
+            {{ end }}
+          </section>
+        </form>
+        <div class="flex flex-col gap-4">
+          <div class="flex items-center gap-4">
+            <button class="btn-lg btn-text !p-3 md:hidden">
+              <span class="material-symbols-rounded">tune</span>Filters
+            </button>
+            <select
+              name="sort"
+              id="sortSelect"
+              class="rounded-lg shadow-shadow1 bg-white px-4 py-3 ml-auto outline-none self-end">
+              <option class="px-4 py-3" value="Featured">Featured</option>
+              <option class="px-4 py-3" value="price_asc">
+                Price: Low to High
+              </option>
+              <option class="px-4 py-3" value="price_desc">
+                Price: High to Low
+              </option>
+              <option class="px-4 py-3" value="new">New Arrivals</option>
+            </select>
+          </div>
+
+          <section
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 py-4 md:py-8">
+            {{range .Laptops}} {{template "laptop_card" .}} {{end}}
+          </section>
+        </div>
+      </div>
+
+      {{template "services" .}}
     </main>
     {{template "footer" .}}
   </body>

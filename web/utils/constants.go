@@ -38,18 +38,13 @@ var GPUBrands = []string{
 }
 
 var CPUs = []string{
-	"Intel i3",
 	"Intel i5",
 	"Intel i7",
-	"Amd Ryzen 3",
-	"Amd Ryzen 5",
+	"Intel Ultra 9",
 	"Amd Ryzen 7",
 	"Amd Ryzen 9",
 	"Arm-based Apple",
 	"Arm-based Snapdragon",
-	"Intel Ultra 5",
-	"Intel Ultra 7",
-	"Intel Ultra 9",
 }
 
 var BRANDS []string = []string{"Lenovo", "HP", "Dell", "Apple", "Samsung", "Asus", "MSI", "Acer", "Microsoft", "Alienware", "Huawei", "LG", "Gigabyte", "Razer", "Framework", "Fujitsu", "Xiaomi", "Google"}
@@ -59,4 +54,27 @@ var MemorySizes = []uint64{
 	12,
 	16,
 	32,
+}
+
+var StorageSizes = []uint64{
+	128,
+	256,
+	512,
+	1024,
+}
+
+type BrandFilter struct {
+	Logo string
+	Name string
+}
+
+var BrandFilters = []BrandFilter{
+	{Logo: "/static/images/brands/lenovo.svg", Name: "Lenovo"},
+	{Logo: "/static/images/brands/apple.svg", Name: "Apple"},
+	{Logo: "/static/images/brands/hp.svg", Name: "HP"},
+	{Logo: "/static/images/brands/msi.svg", Name: "MSI"},
+	{Logo: "/static/images/brands/dell.svg", Name: "Dell"},
+	{Logo: "/static/images/brands/asus.svg", Name: "Asus"},
+	{Logo: "/static/images/brands/acer.svg", Name: "Acer"},
+	{Logo: "/static/images/brands/alienware.svg", Name: "Alienware"},
 }

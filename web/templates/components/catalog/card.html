@@ -1,0 +1,43 @@
+{{define "laptop_card"}}
+<a
+  href="/l/{{.Uid}}"
+  class="group bg-white rounded-lg shadow-shadow1 flex flex-col gap-2 w-full p-4 hover:shadow-black/20 hover:-translate-y-3 hover:rounded-2xl transition-all duration-700 md:last:hidden lg:last:flex">
+  <img
+    src="{{.Thumbnail}}"
+    alt="Laptop Thumbnail"
+    class="aspect-[5/4] object-contain p-[5%]" />
+  {{template "separator" .}}
+  <h3
+    class="font-h6 line-clamp-2 text-ellipsis mt-2 mb-auto group-hover:text-secondary transition-all duration-500">
+    {{.Name}}
+  </h3>
+  <div
+    class="grid grid-cols-[1fr,2fr] p-2 gap-4 font-body-sm whitespace-nowrap overflow-hidden text-ellipsis">
+    <span class="flex items-center gap-2">
+      <span class="material-symbols-rounded">aspect_ratio</span>{{.Size}}"
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="material-symbols-rounded">memory</span>{{.Cpu}}
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="material-symbols-rounded">memory_alt</span>{{.Memory}}GB
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="material-symbols-rounded">storage</span>{{.Storage}}GB
+    </span>
+  </div>
+  <div class="flex justify-between items-center">
+    <button
+      class="icon-button group-hover:text-secondary transition-all duration-500">
+      <span class="material-symbols-rounded mt-1 -mb-1">favorite</span>
+    </button>
+    <span class="text-gray-500 font-body-sm"
+      >from
+      <span
+        class="font-h4 text-black group-hover:text-secondary transition-all duration-500"
+        >${{.PriceMin}}</span
+      ></span
+    >
+  </div>
+</a>
+{{end}}

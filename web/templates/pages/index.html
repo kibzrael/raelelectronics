@@ -23,27 +23,27 @@
       </div>
 
       <section class="grid grid-cols-3 md:grid-cols-6 gap-3 md:gap-6 p-4">
-        <a href="/feed?brand=" class="product-brand">
+        <a href="/feed?brand=Lenovo" class="product-brand">
           <img src="/static/images/brands/lenovo.svg" alt="Hero image" />
           <span>Lenovo</span>
         </a>
-        <a href="/feed?brand=" class="product-brand">
+        <a href="/feed?brand=Apple" class="product-brand">
           <img src="/static/images/brands/apple.svg" alt="Hero image" />
           <span>Apple</span>
         </a>
-        <a href="/feed?brand=" class="product-brand">
+        <a href="/feed?brand=HP" class="product-brand">
           <img src="/static/images/brands/hp.svg" alt="Hero image" />
           <span>HP</span>
         </a>
-        <a href="/feed?brand=" class="product-brand">
+        <a href="/feed?brand=MSI" class="product-brand">
           <img src="/static/images/brands/msi.svg" alt="Hero image" />
           <span>MSI</span>
         </a>
-        <a href="/feed?brand=" class="product-brand">
+        <a href="/feed?brand=Dell" class="product-brand">
           <img src="/static/images/brands/dell.svg" alt="Hero image" />
           <span>Dell</span>
         </a>
-        <a href="/feed?brand=" class="product-brand">
+        <a href="/feed?brand=Asus" class="product-brand">
           <img src="/static/images/brands/asus.svg" alt="Hero image" />
           <span>Asus</span>
         </a>
@@ -100,76 +100,11 @@
         </div>
         <div
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 py-4 md:py-8">
-          {{range .Featured}}
-          <a
-            href="/l/{{.Uid}}"
-            class="group bg-white rounded-lg shadow-shadow1 flex flex-col gap-2 w-full p-4 hover:shadow-black/20 hover:-translate-y-3 hover:rounded-2xl transition-all duration-700 md:last:hidden lg:last:flex">
-            <img
-              src="{{.Thumbnail}}"
-              alt="Laptop Thumbnail"
-              class="aspect-[5/4] object-contain p-[5%]" />
-            {{template "separator" .}}
-            <h3
-              class="font-h6 line-clamp-2 text-ellipsis mt-2 mb-auto group-hover:text-secondary transition-all duration-500">
-              {{.Name}}
-            </h3>
-            <div
-              class="grid grid-cols-[1fr,2fr] p-2 gap-4 font-body-sm whitespace-nowrap overflow-hidden text-ellipsis">
-              <span class="flex items-center gap-2">
-                <span class="material-symbols-rounded">aspect_ratio</span
-                >{{.Size}}"
-              </span>
-              <span class="flex items-center gap-2">
-                <span class="material-symbols-rounded">memory</span>{{.Cpu}}
-              </span>
-              <span class="flex items-center gap-2">
-                <span class="material-symbols-rounded">memory_alt</span
-                >{{.Memory}}GB
-              </span>
-              <span class="flex items-center gap-2">
-                <span class="material-symbols-rounded">storage</span
-                >{{.Storage}}GB
-              </span>
-            </div>
-            <div class="flex justify-between items-center">
-              <button
-                class="icon-button group-hover:text-secondary transition-all duration-500">
-                <span class="material-symbols-rounded mt-1 -mb-1"
-                  >favorite</span
-                >
-              </button>
-              <span class="text-gray-500 font-body-sm"
-                >from
-                <span
-                  class="font-h4 text-black group-hover:text-secondary transition-all duration-500"
-                  >${{.Price}}</span
-                ></span
-              >
-            </div>
-          </a>
-          {{end}}
+          {{range .Featured}} {{template "laptop_card" .}} {{end}}
         </div>
       </section>
 
-      <section
-        class="grid grid-cols-2 lg:grid-cols-4 gap-x-2 gap-y-6 font-body-xl mb-8 mx-4">
-        <div class="flex items-center gap-4">
-          <img src="/static/icons/device.svg" alt="Icon" />
-          Latest & Greatest Tech
-        </div>
-        <div class="flex items-center gap-4">
-          <img src="/static/icons/guarantee.svg" alt="Icon" />
-          Quality Guarantee
-        </div>
-        <div class="flex items-center gap-4">
-          <img src="/static/icons/shipping.svg" alt="Icon" />
-          Free Shipping
-        </div>
-        <div class="flex items-center gap-4">
-          <img src="/static/icons/timer.svg" alt="Icon" />
-          24/7 Support
-        </div>
-      </section>
+      {{template "services" .}}
     </main>
     {{template "footer" .}}
   </body>
