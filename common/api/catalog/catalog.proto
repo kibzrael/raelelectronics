@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+option go_package = "github.com/kibzrael/raelelectronics/common/api/catalog";
+
+package catalog;
+
+// message DetailsRequest{
+//     string uid = 1;
+// }
+
+// message Laptop{
+//     message CPU{
+
+//     }
+
+//     string Uid = 1;
+//     int64  NotebId = 2;
+//     string Name = 3;
+//     string Brand = 4;
+//     string Thumbnail = 5;
+//     repeated string Images = 6;
+//     string Link = 7;
+//     string Launched = 8;
+//     float PriceMin = 9;
+//     float PriceMax = 10;
+
+//     repeated CPU CPU = 11;
+// }
+
+message LaptopCard{
+    string Uid = 1;
+    string Name = 2;
+    string Brand = 3;
+    string Thumbnail = 4;
+    string Launched = 5;
+    float PriceMin = 6;
+    float PriceMax = 7;
+    string Colors = 8;
+    float Size = 9;
+    string Cpu = 10;
+    int64 Cores = 11;
+    float BaseSpeed = 12;
+    int64 Memory = 13;
+    int64 Storage = 14;
+    float BatteryLife = 15;
+    float Featured = 16;
+}
+
+enum FeedSort {
+    Featured = 0;
+    New = 1;
+    PriceAsc = 2;
+    PriceDesc = 3;
+}
+
+message FeedFilter {
+    string key = 1;
+    string val = 2;
+}
+
+message FeedRequest{
+    repeated FeedFilter filters = 1;
+    FeedSort sort = 2;
+    int64 page = 3;
+}
+
+message FeedResponse{
+    repeated LaptopCard laptops = 1;
+}
+
+service CatalogService{
+    // rpc getLaptopDetails(DetailsRequest) returns (Laptop);
+    rpc laptopFeed(FeedRequest) returns  (FeedResponse);
+}
