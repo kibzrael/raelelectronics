@@ -35,7 +35,7 @@ message LaptopCard{
     string Launched = 5;
     double PriceMin = 6;
     double PriceMax = 7;
-    string Colors = 8;
+    repeated string Colors = 8;
     double Size = 9;
     string Cpu = 10;
     int64 Cores = 11;
@@ -43,7 +43,6 @@ message LaptopCard{
     int64 Memory = 13;
     int64 Storage = 14;
     double BatteryLife = 15;
-    double Featured = 16;
 }
 
 enum FeedSort {
