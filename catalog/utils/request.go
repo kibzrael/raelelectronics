@@ -12,11 +12,11 @@ import (
 func SortQuery(req *c.FeedRequest) (sort string) {
 	switch req.Sort {
 	case c.FeedSort_New:
-		sort = "laptops.launched DESC"
+		sort = "l.launched DESC"
 	case c.FeedSort_PriceAsc:
-		sort = "laptops.price_min ASC"
+		sort = "l.price_min ASC"
 	case c.FeedSort_PriceDesc:
-		sort = "laptops.price_min DESC"
+		sort = "l.price_min DESC"
 	default:
 		sort = "l.featured DESC"
 	}
