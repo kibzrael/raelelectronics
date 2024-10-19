@@ -21,8 +21,8 @@ package catalog;
 //     repeated string Images = 6;
 //     string Link = 7;
 //     string Launched = 8;
-//     float PriceMin = 9;
-//     float PriceMax = 10;
+//     double PriceMin = 9;
+//     double PriceMax = 10;
 
 //     repeated CPU CPU = 11;
 // }
@@ -33,17 +33,17 @@ message LaptopCard{
     string Brand = 3;
     string Thumbnail = 4;
     string Launched = 5;
-    float PriceMin = 6;
-    float PriceMax = 7;
+    double PriceMin = 6;
+    double PriceMax = 7;
     string Colors = 8;
-    float Size = 9;
+    double Size = 9;
     string Cpu = 10;
     int64 Cores = 11;
-    float BaseSpeed = 12;
+    double BaseSpeed = 12;
     int64 Memory = 13;
     int64 Storage = 14;
-    float BatteryLife = 15;
-    float Featured = 16;
+    double BatteryLife = 15;
+    double Featured = 16;
 }
 
 enum FeedSort {
