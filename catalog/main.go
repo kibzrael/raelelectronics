@@ -4,15 +4,31 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
+	"net"
 	"os"
+
+	c "github.com/kibzrael/raelelectronics/common/api/catalog"
+	"google.golang.org/grpc"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/kibzrael/raelelectronics/catalog/data"
 	"github.com/kibzrael/raelelectronics/catalog/routes"
-	"github.com/kibzrael/raelelectronics/catalog/utils"
 	_ "github.com/lib/pq"
 )
+
+type CatalogServer struct {
+	c.UnimplementedCatalogServiceServer
+	db *sqlx.DB
+}
+
+func (s *CatalogServer) LaptopFeed(ctx context.Context, req *c.FeedRequest) (*c.FeedResponse, error) {
+	ctx = context.WithValue(ctx, data.DB_CONTEXT, s.db)
+	laptops, err := routes.FeedHandler(ctx, req)
+	response := c.FeedResponse{
+		Laptops: laptops,
+	}
+	return &response, err
+}
 
 func main() {
 
@@ -23,22 +39,16 @@ func main() {
 
 	db.MustExec(data.Schema)
 
-	ctx := context.WithValue(context.Background(), data.DB_CONTEXT, db)
-
-	// data.SeedLaptops(ctx)
-
-	catalogRouter := http.ServeMux{}
-	catalogRouter.Handle("GET /feed", utils.CatalogHandler(ctx, routes.FeedHandler))
-	catalogRouter.Handle("POST /seed", utils.CatalogHandler(ctx, data.SeedLaptops))
-	catalogRouter.Handle("GET /{uid}", utils.CatalogHandler(ctx, routes.DetailsHandler))
-
-	server := http.Server{
-		Addr:    ":" + os.Getenv("PORT"),
-		Handler: &catalogRouter,
-	}
-	fmt.Println("Catalog is listening on port", os.Getenv("PORT"))
-	err = server.ListenAndServe()
+	lis, err := net.Listen("tcp", ":"+os.Getenv("PORT"))
 	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	server := grpc.NewServer()
+	c.RegisterCatalogServiceServer(server, &CatalogServer{db: db})
+
+	fmt.Println("Catalog is listening on port", os.Getenv("PORT"))
+	if err = server.Serve(lis); err != nil {
 		log.Fatal(err.Error())
 	}
 }

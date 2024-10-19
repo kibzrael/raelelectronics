@@ -3,7 +3,9 @@ package routes
 import (
 	"context"
 	"fmt"
-	"net/http"
+	"strings"
+
+	c "github.com/kibzrael/raelelectronics/common/api/catalog"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/kibzrael/raelelectronics/catalog/data"
@@ -36,13 +38,11 @@ type LaptopCard struct {
 	Featured    float64
 }
 
-func FeedHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
+func FeedHandler(ctx context.Context, req *c.FeedRequest) (res []*c.LaptopCard, err error) {
 	db := ctx.Value(data.DB_CONTEXT).(*sqlx.DB)
 
 	sort := utils.SortQuery(req)
 	filters := utils.FilterQuery(req)
-
-	laptops := []LaptopCard{}
 
 	sql := fmt.Sprintf(`
 		SELECT * FROM
@@ -67,19 +67,34 @@ func FeedHandler(ctx context.Context, res http.ResponseWriter, req *http.Request
 
 	rows, err := db.Queryx(sql)
 	if err != nil {
-		utils.ApiPanic(&res, &err)
 		return
 	}
 
 	for rows.Next() {
 		laptop := LaptopCard{}
 		if err := rows.StructScan(&laptop); err != nil {
-			utils.ApiPanic(&res, &err)
-			return
+			return res, err
 		}
-		laptops = append(laptops, laptop)
+
+		response := &c.LaptopCard{
+			Uid:         laptop.Uid,
+			Name:        laptop.Name,
+			Brand:       laptop.Brand,
+			Thumbnail:   laptop.Thumbnail,
+			Launched:    laptop.Thumbnail,
+			PriceMin:    laptop.PriceMin,
+			PriceMax:    laptop.PriceMax,
+			Colors:      strings.Split(laptop.Colors, ","),
+			Size:        laptop.Size,
+			Cpu:         laptop.Cpu,
+			Cores:       laptop.Cores,
+			BaseSpeed:   laptop.BaseSpeed,
+			Memory:      laptop.Memory,
+			Storage:     laptop.Storage,
+			BatteryLife: laptop.BatteryLife,
+		}
+		res = append(res, response)
 	}
 
-	response := map[string]interface{}{"message": "Feed fetched successfully", "laptops": laptops}
-	utils.JsonResponse(&res, response)
+	return
 }

@@ -3,19 +3,19 @@ package utils
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"strconv"
 	"strings"
+
+	c "github.com/kibzrael/raelelectronics/common/api/catalog"
 )
 
-func SortQuery(req *http.Request) (sort string) {
-	keyword := req.URL.Query().Get("sort")
-	switch keyword {
-	case "new":
+func SortQuery(req *c.FeedRequest) (sort string) {
+	switch req.Sort {
+	case c.FeedSort_New:
 		sort = "laptops.launched DESC"
-	case "price_asc":
+	case c.FeedSort_PriceAsc:
 		sort = "laptops.price_min ASC"
-	case "price_desc":
+	case c.FeedSort_PriceDesc:
 		sort = "laptops.price_min DESC"
 	default:
 		sort = "l.featured DESC"
@@ -23,14 +23,13 @@ func SortQuery(req *http.Request) (sort string) {
 	return
 }
 
-func FilterQuery(req *http.Request) (query string) {
-	q := req.URL.Query()
+func FilterQuery(req *c.FeedRequest) (query string) {
 	queries := []string{}
-	for key, val := range q {
-		switch key {
+	for _, filter := range req.Filters {
+		switch filter.Key {
 		case "brand":
 			arr := []string{}
-			for _, b := range strings.Split(val[0], ",") {
+			for _, b := range strings.Split(filter.Val, ",") {
 				if len(b) > 0 {
 					arr = append(arr, fmt.Sprintf(`'%s'`, b))
 				}
@@ -40,38 +39,38 @@ func FilterQuery(req *http.Request) (query string) {
 				queries = append(queries, fmt.Sprintf("laptops.brand IN (%s)", brands))
 			}
 		case "price_min":
-			if price, err := strconv.ParseFloat(val[0], 64); err != nil {
+			if price, err := strconv.ParseFloat(filter.Val, 64); err != nil {
 				log.Println("Failed to parse price_min", err)
 			} else {
 				queries = append(queries, fmt.Sprintf("laptops.price_min >= %v", price))
 			}
 		case "price_max":
-			if price, err := strconv.ParseFloat(val[0], 64); err != nil {
+			if price, err := strconv.ParseFloat(filter.Val, 64); err != nil {
 				log.Println("Failed to parse price_max", err)
 			} else {
 				queries = append(queries, fmt.Sprintf("laptops.price_max <= %v", price))
 			}
 		case "memory":
-			if memory, err := strconv.ParseUint(val[0], 10, 64); err != nil {
+			if memory, err := strconv.ParseUint(filter.Val, 10, 64); err != nil {
 				log.Println("Failed to parse memory", err)
 			} else {
 				queries = append(queries, fmt.Sprintf("memorys.size = %v", memory))
 			}
 		case "size":
-			if size, err := strconv.ParseUint(val[0], 10, 64); err != nil {
+			if size, err := strconv.ParseUint(filter.Val, 10, 64); err != nil {
 				log.Println("Failed to parse size", err)
 			} else {
 				queries = append(queries, fmt.Sprintf("displays.size >= %v AND displays.size < %v", size, size+1))
 			}
 		case "storage":
-			if storage, err := strconv.ParseUint(val[0], 10, 64); err != nil {
+			if storage, err := strconv.ParseUint(filter.Val, 10, 64); err != nil {
 				log.Println("Failed to parse storage", err)
 			} else {
 				queries = append(queries, fmt.Sprintf("storages.capacity = %v", storage))
 			}
 		case "cpu":
 			arr := []string{}
-			for _, b := range strings.Split(val[0], ",") {
+			for _, b := range strings.Split(filter.Val, ",") {
 				if len(b) > 0 {
 					arr = append(arr, fmt.Sprintf(`concat_ws(' ', cpus.architecture, cpus.model) ILIKE '%s%%'`, b))
 				}
@@ -82,7 +81,7 @@ func FilterQuery(req *http.Request) (query string) {
 			}
 		case "gpu":
 			arr := []string{}
-			for _, b := range strings.Split(val[0], ",") {
+			for _, b := range strings.Split(filter.Val, ",") {
 				if len(b) > 0 {
 					arr = append(arr, fmt.Sprintf(`'%s'`, b))
 				}
@@ -93,7 +92,7 @@ func FilterQuery(req *http.Request) (query string) {
 			}
 		case "colors":
 			arr := []string{}
-			for _, b := range strings.Split(val[0], ",") {
+			for _, b := range strings.Split(filter.Val, ",") {
 				if len(b) > 0 {
 					arr = append(arr, fmt.Sprintf(`chassis.colors ILIKE '%%%s%%'`, b))
 				}
