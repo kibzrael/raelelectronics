@@ -51,28 +51,60 @@ func FilterQuery(req *c.FeedRequest) (query string) {
 				queries = append(queries, fmt.Sprintf("laptops.price_max <= %v", price))
 			}
 		case "memory":
-			if memory, err := strconv.ParseUint(filter.Val, 10, 64); err != nil {
-				log.Println("Failed to parse memory", err)
-			} else {
-				queries = append(queries, fmt.Sprintf("memorys.size = %v", memory))
+			arr := []string{}
+			for _, m := range strings.Split(filter.Val, ",") {
+				if memory, err := strconv.ParseUint(m, 10, 64); err != nil {
+					log.Println("Failed to parse memory", err)
+				} else {
+					arr = append(arr, fmt.Sprintf("memorys.size = %v", memory))
+				}
+			}
+			if len(arr) > 0 {
+				memorys := strings.Join(arr, " OR ")
+				queries = append(queries, fmt.Sprintf("(%s)", memorys))
 			}
 		case "size":
-			if size, err := strconv.ParseUint(filter.Val, 10, 64); err != nil {
-				log.Println("Failed to parse size", err)
-			} else {
-				queries = append(queries, fmt.Sprintf("displays.size >= %v AND displays.size < %v", size, size+1))
+			arr := []string{}
+			for _, s := range strings.Split(filter.Val, ",") {
+				if size, err := strconv.ParseUint(s, 10, 64); err != nil {
+					log.Println("Failed to parse size", err)
+				} else {
+					arr = append(arr, fmt.Sprintf("displays.size >= %v AND displays.size < %v", size, size+1))
+				}
+			}
+			if len(arr) > 0 {
+				sizes := strings.Join(arr, " OR ")
+				queries = append(queries, fmt.Sprintf("(%s)", sizes))
+			}
+		case "display":
+			arr := []string{}
+			for _, d := range strings.Split(filter.Val, ",") {
+				if len(d) > 0 {
+					arr = append(arr, fmt.Sprintf(`'%s'`, d))
+				}
+			}
+			if len(arr) > 0 {
+				displays := strings.Join(arr, ",")
+				queries = append(queries, fmt.Sprintf("displays.type IN (%s)", displays))
 			}
 		case "storage":
-			if storage, err := strconv.ParseUint(filter.Val, 10, 64); err != nil {
-				log.Println("Failed to parse storage", err)
-			} else {
-				queries = append(queries, fmt.Sprintf("storages.capacity = %v", storage))
+			arr := []string{}
+			for _, s := range strings.Split(filter.Val, ",") {
+				if storage, err := strconv.ParseUint(s, 10, 64); err != nil {
+					log.Println("Failed to parse storage", err)
+				} else {
+					arr = append(arr, fmt.Sprintf("storages.capacity = %v", storage))
+				}
+			}
+			if len(arr) > 0 {
+				storages := strings.Join(arr, " OR ")
+				queries = append(queries, fmt.Sprintf("(%s)", storages))
 			}
 		case "cpu":
 			arr := []string{}
-			for _, b := range strings.Split(filter.Val, ",") {
-				if len(b) > 0 {
-					arr = append(arr, fmt.Sprintf(`concat_ws(' ', cpus.architecture, cpus.model) ILIKE '%s%%'`, b))
+			for _, c := range strings.Split(filter.Val, ",") {
+				if len(c) > 0 {
+					arr = append(arr, fmt.Sprintf(`concat_ws(' ', cpus.architecture, cpus.model) ILIKE '%s%%'`, c))
 				}
 			}
 			if len(arr) > 0 {
@@ -81,9 +113,9 @@ func FilterQuery(req *c.FeedRequest) (query string) {
 			}
 		case "gpu":
 			arr := []string{}
-			for _, b := range strings.Split(filter.Val, ",") {
-				if len(b) > 0 {
-					arr = append(arr, fmt.Sprintf(`'%s'`, b))
+			for _, g := range strings.Split(filter.Val, ",") {
+				if len(g) > 0 {
+					arr = append(arr, fmt.Sprintf(`'%s'`, g))
 				}
 			}
 			if len(arr) > 0 {
@@ -92,9 +124,9 @@ func FilterQuery(req *c.FeedRequest) (query string) {
 			}
 		case "colors":
 			arr := []string{}
-			for _, b := range strings.Split(filter.Val, ",") {
-				if len(b) > 0 {
-					arr = append(arr, fmt.Sprintf(`chassis.colors ILIKE '%%%s%%'`, b))
+			for _, c := range strings.Split(filter.Val, ",") {
+				if len(c) > 0 {
+					arr = append(arr, fmt.Sprintf(`chassis.colors ILIKE '%%%s%%'`, c))
 				}
 			}
 			if len(arr) > 0 {

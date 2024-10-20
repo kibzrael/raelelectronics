@@ -8,52 +8,80 @@
       <section
         class="grid grid-cols-4 md:grid-cols-8 gap-3 lg:gap-6 p-4 -mt-4 md:-mt-10">
         {{ range .BrandFilters }}
-        <button class="product-brand sm">
+        <button class='product-brand sm {{ if eq (indexFilter $.Filters "brand") .Name}}active{{end}}' onclick="brandFilter('{{.Name}}')">
           <img src="{{.Logo}}" alt="Hero image" />
           <span>{{.Name}}</span>
         </button>
         {{ end }}
       </section>
 
-      <section class="flex gap-2 md:gap-4 mx-4 md:-my-2">
-        <div class="chip">
-          <span>Silver</span>
-          <button class="icon-button">
-            <span class="material-symbols-rounded">close</span>
-          </button>
-        </div>
-        <div class="chip">
-          <span>Apple</span>
-          <button class="icon-button">
-            <span class="material-symbols-rounded">close</span>
-          </button>
-        </div>
-        <div class="chip">
-          <span>8GB ram</span>
-          <button class="icon-button">
-            <span class="material-symbols-rounded">close</span>
-          </button>
-        </div>
-      </section>
+      {{if .Filters}}
+        <section class="flex gap-2 md:gap-4 mx-4 md:-my-2">
+          {{ range .Filters}}
+          <div class="chip">
+            <span class="material-symbols-rounded -mr-1">
+              {{ if eq .Key "memory"}} memory_alt {{ else if eq .Key "storage"}}
+              storage {{ else if eq .Key "size" }} aspect_ratio {{ else if eq .Key
+              "display" }} aspect_ratio {{ else if eq .Key "cpu" }} memory
+              {{ end }}
+            </span>
+            <span>
+              {{ if eq .Key "price_min"}}> ${{ else if eq .Key "price_max" }}< ${{
+              end }}{{.Val}}
+              <!-- Suffix -->
+              {{ if eq .Key "memory"}} GB {{ else if eq .Key "storage" }} GB {{
+              else if eq .Key "size" }}" {{ end }}
+            </span>
+            <button type="button" class="icon-button" onclick="removeFilter('{{.Key}}')">
+              <span class="material-symbols-rounded">close</span>
+            </button>
+          </div>
+          {{ end }}
+          <!-- Sort -->
+          {{if ne .Sort "featured"}}
+          <div class="chip pl-2 bg-gray-100">
+            {{ if eq .Sort "new"}} New Arrivals {{ else if eq .Sort "price_asc"}}
+            Price: Low to High {{ else if eq .Sort "price_desc" }} Price: High to
+            Low {{ else }} Featured {{ end }}
+            <button class="icon-button" onclick="removeFilter('sort')">
+              <span class="material-symbols-rounded">close</span>
+            </button>
+          </div>
+          {{ end }}
+        </section>
+      {{end}}
 
       <div
         class="relative grid grid-cols-1 md:grid-cols-[16rem,1fr] gap-8 mx-4">
-        <form class="hidden md:flex flex-col gap-4">
+        <form
+          id="filtersForm"
+          class="hidden md:flex flex-col gap-4"
+          hx-get="/feed"
+          hx-target="body"
+          hx-trigger="submit, reset"
+          hx-replace-url="true">
           <div class="flex items-center justify-between">
             <h3 class="font-h5">Filters</h3>
-            <button type="reset" class="btn-lg btn-text">Clear all</button>
+            <button hx-get="/feed" type="button" class="btn-lg btn-text">Clear all</button>
           </div>
+          <input id="brandFilter" type="hidden" name="brand" value='{{ indexFilter .Filters "brand"}}' />
+          <input id="sortInput" type="hidden" name="sort" value='{{.Sort}}' />
+          <button type="submit" class="btn-lg btn-outlined !py-2">Apply Filters</button>
           <section class="flex flex-col gap-4">
             <h4 class="font-body-xl">Price</h4>
             <div class="flex gap-4 items-center">
               <input
                 type="number"
                 placeholder="Min"
+                name="price_min"
+                value='{{ indexFilter .Filters "price_min"}}'
                 class="flex-1 min-w-0 rounded-lg border-2 border-gray-300 px-4 py-3 placeholder:font-body-xl" />
               <span class="font-caption-lg">-</span>
               <input
                 type="number"
                 placeholder="Max"
+                name="price_max"
+                value='{{ indexFilter .Filters "price_max"}}'
                 class="flex-1 min-w-0 rounded-lg border-2 border-gray-300 px-4 py-3 placeholder:font-body-xl" />
             </div>
           </section>
@@ -67,6 +95,7 @@
                 name="size"
                 value="{{.}}"
                 class="w-5"
+                {{if hasFilter $.Filters "size" .}}checked{{end}}
                 id="size{{.}}" />
               {{.}}" - {{.}}.9"
             </label>
@@ -83,6 +112,7 @@
                 name="display"
                 value="{{.}}"
                 class="w-5"
+                {{if hasFilter $.Filters "display" .}}checked{{end}}
                 id="display{{.}}" />
               {{.}}
             </label>
@@ -98,6 +128,7 @@
                 name="memory"
                 value="{{.}}"
                 class="w-5"
+                {{if hasFilter $.Filters "memory" .}}checked{{end}}
                 id="memory{{.}}" />
               {{.}} GB
             </label>
@@ -113,6 +144,7 @@
                 name="storage"
                 value="{{.}}"
                 class="w-5"
+                {{if hasFilter $.Filters "storage" .}}checked{{end}}
                 id="storage{{.}}" />
               {{.}} GB
             </label>
@@ -128,11 +160,13 @@
                 name="cpu"
                 value="{{.}}"
                 class="w-5"
+                {{if hasFilter $.Filters "cpu" .}}checked{{end}}
                 id="cpu{{.}}" />
               {{.}}
             </label>
             {{ end }}
           </section>
+          {{template "separator" .}}
         </form>
         <div class="flex flex-col gap-4">
           <div class="flex items-center gap-4">
@@ -142,19 +176,23 @@
             <select
               name="sort"
               id="sortSelect"
-              class="rounded-lg shadow-shadow1 bg-white px-4 py-3 ml-auto outline-none self-end">
+              value="{{.Sort}}"
+              class="rounded-lg shadow-shadow1 bg-white px-4 py-3 ml-auto outline-none self-end"
+              onchange="handleSort()"
+              >
               <option class="px-4 py-3" value="Featured">Featured</option>
-              <option class="px-4 py-3" value="price_asc">
+              <option class="px-4 py-3" value="price_asc" {{if eq .Sort "price_asc"}}selected{{end}}>
                 Price: Low to High
               </option>
-              <option class="px-4 py-3" value="price_desc">
+              <option class="px-4 py-3" value="price_desc" {{if eq .Sort "price_desc"}}selected{{end}}>
                 Price: High to Low
               </option>
-              <option class="px-4 py-3" value="new">New Arrivals</option>
+              <option class="px-4 py-3" value="new" {{if eq .Sort "new"}}selected{{end}}>New Arrivals</option>
             </select>
           </div>
 
           <section
+            id="laptopGrid"
             class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 py-4 md:py-8">
             {{range .Laptops}} {{template "laptop_card" .}} {{end}}
           </section>
@@ -165,4 +203,27 @@
     </main>
     {{template "footer" .}}
   </body>
+
+  <script>
+    function brandFilter(val){
+      document.getElementById("brandFilter").value = val
+      document.getElementById("filtersForm").requestSubmit()
+    }
+
+    function removeFilter(key){
+      document.querySelectorAll(`input[name='${key}']`).forEach(el => {
+        if (el.getAttribute("type") == "checkbox"){
+          el.removeAttribute("checked")
+        } else {
+          el.value = ""
+        }
+      })
+      document.getElementById("filtersForm").requestSubmit()
+    }
+
+    function handleSort(){
+      document.getElementById("sortInput").value = document.getElementById("sortSelect").value
+      document.getElementById("filtersForm").requestSubmit()
+    }
+  </script>
 </html>

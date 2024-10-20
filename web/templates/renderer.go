@@ -2,12 +2,14 @@ package templates
 
 import (
 	"embed"
+	"fmt"
 	"io"
 	"io/fs"
 	"log"
 	"strings"
 	"text/template"
 
+	c "github.com/kibzrael/raelelectronics/common/api/catalog"
 	"github.com/labstack/echo/v4"
 )
 
@@ -32,7 +34,10 @@ func NewTemplateRenderer(e *echo.Echo, resources embed.FS) {
 		return nil
 	})
 
-	tmpl := template.Must(template.ParseFS(resources, paths...))
+	tmpl := template.Must(template.New("").Funcs(template.FuncMap{
+		"hasFilter":   hasFilter,
+		"indexFilter": indexFilter,
+	}).ParseFS(resources, paths...))
 
 	t := newTemplate(tmpl)
 	e.Renderer = t
@@ -42,4 +47,25 @@ func newTemplate(templates *template.Template) echo.Renderer {
 	return &TemplateRegistry{
 		templates: templates,
 	}
+}
+
+func hasFilter(filters []*c.FeedFilter, key string, val interface{}) bool {
+	for _, f := range filters {
+		for _, filter := range strings.Split(f.Val, ",") {
+			if f.Key == key && filter == fmt.Sprintf("%v", val) {
+				return true
+			}
+		}
+
+	}
+	return false
+}
+
+func indexFilter(filters []*c.FeedFilter, key string) string {
+	for _, filter := range filters {
+		if filter.Key == key {
+			return filter.Val
+		}
+	}
+	return ""
 }

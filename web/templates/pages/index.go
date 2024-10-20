@@ -21,7 +21,7 @@ type Featured struct {
 	Uid       string
 	Name      string
 	Thumbnail string
-	Price     float64 `db:"price_min"`
+	PriceMin  float64 `db:"price_min"`
 	Colors    string
 	Size      float64
 	Cpu       string
