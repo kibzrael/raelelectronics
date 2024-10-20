@@ -19,14 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CatalogService_LaptopFeed_FullMethodName = "/catalog.CatalogService/laptopFeed"
+	CatalogService_GetLaptopDetails_FullMethodName = "/catalog.CatalogService/getLaptopDetails"
+	CatalogService_LaptopFeed_FullMethodName       = "/catalog.CatalogService/laptopFeed"
 )
 
 // CatalogServiceClient is the client API for CatalogService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CatalogServiceClient interface {
-	// rpc getLaptopDetails(DetailsRequest) returns (Laptop);
+	GetLaptopDetails(ctx context.Context, in *DetailsRequest, opts ...grpc.CallOption) (*Laptop, error)
 	LaptopFeed(ctx context.Context, in *FeedRequest, opts ...grpc.CallOption) (*FeedResponse, error)
 }
 
@@ -36,6 +37,16 @@ type catalogServiceClient struct {
 
 func NewCatalogServiceClient(cc grpc.ClientConnInterface) CatalogServiceClient {
 	return &catalogServiceClient{cc}
+}
+
+func (c *catalogServiceClient) GetLaptopDetails(ctx context.Context, in *DetailsRequest, opts ...grpc.CallOption) (*Laptop, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Laptop)
+	err := c.cc.Invoke(ctx, CatalogService_GetLaptopDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *catalogServiceClient) LaptopFeed(ctx context.Context, in *FeedRequest, opts ...grpc.CallOption) (*FeedResponse, error) {
@@ -52,7 +63,7 @@ func (c *catalogServiceClient) LaptopFeed(ctx context.Context, in *FeedRequest, 
 // All implementations must embed UnimplementedCatalogServiceServer
 // for forward compatibility.
 type CatalogServiceServer interface {
-	// rpc getLaptopDetails(DetailsRequest) returns (Laptop);
+	GetLaptopDetails(context.Context, *DetailsRequest) (*Laptop, error)
 	LaptopFeed(context.Context, *FeedRequest) (*FeedResponse, error)
 	mustEmbedUnimplementedCatalogServiceServer()
 }
@@ -64,6 +75,9 @@ type CatalogServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedCatalogServiceServer struct{}
 
+func (UnimplementedCatalogServiceServer) GetLaptopDetails(context.Context, *DetailsRequest) (*Laptop, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLaptopDetails not implemented")
+}
 func (UnimplementedCatalogServiceServer) LaptopFeed(context.Context, *FeedRequest) (*FeedResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LaptopFeed not implemented")
 }
@@ -86,6 +100,24 @@ func RegisterCatalogServiceServer(s grpc.ServiceRegistrar, srv CatalogServiceSer
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&CatalogService_ServiceDesc, srv)
+}
+
+func _CatalogService_GetLaptopDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).GetLaptopDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogService_GetLaptopDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).GetLaptopDetails(ctx, req.(*DetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _CatalogService_LaptopFeed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -113,6 +145,10 @@ var CatalogService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "catalog.CatalogService",
 	HandlerType: (*CatalogServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "getLaptopDetails",
+			Handler:    _CatalogService_GetLaptopDetails_Handler,
+		},
 		{
 			MethodName: "laptopFeed",
 			Handler:    _CatalogService_LaptopFeed_Handler,

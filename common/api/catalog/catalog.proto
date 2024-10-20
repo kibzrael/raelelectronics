@@ -4,28 +4,126 @@ option go_package = "github.com/kibzrael/raelelectronics/common/api/catalog";
 
 package catalog;
 
-// message DetailsRequest{
-//     string uid = 1;
-// }
+message DetailsRequest{
+    string uid = 1;
+}
 
-// message Laptop{
-//     message CPU{
+message CPU{
+    string Uid = 1;
+    string Model = 2;
+    string Architecture = 3;
+    int64 Lithography = 4;
+    double Cache = 5;
+    double BaseSpeed = 6;
+    double BoostSpeed = 7;
+    int64 Cores = 8;
+    int64 Tdp = 9;
+    string IntegratedVideo = 10;
+    string OtherInfo = 11;
+}
 
-//     }
+message GPU{
+    string Uid = 1;
+    string Producer = 2;
+    string Model = 3;
+    string Architecture = 4;
+    int64 Lithography = 5;
+    double BaseSpeed = 6;
+    double BoostSpeed = 7;
+    int64 MemorySize = 8;
+    double MemorySpeed = 9;
+    string MemoryType = 10;
+    int64 Tdp = 11;
+    string OtherInfo = 12;
+}
 
-//     string Uid = 1;
-//     int64  NotebId = 2;
-//     string Name = 3;
-//     string Brand = 4;
-//     string Thumbnail = 5;
-//     repeated string Images = 6;
-//     string Link = 7;
-//     string Launched = 8;
-//     double PriceMin = 9;
-//     double PriceMax = 10;
+message Display{
+    string Uid = 1;
+    double Size = 2;
+    int64 HResolution = 3;
+    int64 VResolution = 4;
+    string Type = 5;
+    double SRGB = 6;
+    bool Touchscreen = 7;
+    string OtherInfo = 8;
+}
 
-//     repeated CPU CPU = 11;
-// }
+message Memory{
+    string Uid = 1;
+    int64 Size = 2;
+    double Speed = 3;
+    string Type = 4;
+}
+
+message Storage{
+    string Uid = 1;
+    int64 Capacity = 2;
+    int64 Speed = 3;
+    string Model = 4;
+}
+
+message WirelessCard{
+    string Uid = 1;
+    string Model = 2;
+    int64 Speed = 3;
+    string OtherInfo = 4;
+}
+
+message Motherboard{
+    string Uid = 1;
+    string Ram = 2;
+    string Storage = 3;
+}
+
+message Chasis{
+    message Port{
+        string Uid = 1;
+        int64 Count = 2;
+        string Type = 3;
+    }
+
+    string Uid = 1;
+    double Height = 2;
+    double Depth = 3;
+    double Width = 4;
+    double Weight = 5;
+    repeated string Colors = 6;
+    double Webcam = 7;
+    string OtherInfo = 8;
+
+    repeated Port Ports = 9;
+}
+
+message Battery{
+    string Uid = 1;
+    double Capacity = 2;
+    string Type = 3;
+    double Life = 4;
+    string OtherInfo = 5;
+}
+
+message Laptop{
+    string Uid = 1;
+    int64  NotebId = 2;
+    string Name = 3;
+    string Brand = 4;
+    string Thumbnail = 5;
+    repeated string Images = 6;
+    string Link = 7;
+    string Launched = 8;
+    double PriceMin = 9;
+    double PriceMax = 10;
+
+    repeated CPU CPU = 11;
+    repeated GPU GPU = 12;
+    repeated Display Display = 13;
+    repeated Memory Memory = 14;
+    repeated Storage Storage = 15;
+    repeated WirelessCard WirelessCard = 16;
+    repeated Motherboard Motherboard = 17;
+    repeated Chasis Chasis = 18;
+    repeated Battery Battery = 19;
+}
 
 message LaptopCard{
     string Uid = 1;
@@ -70,6 +168,6 @@ message FeedResponse{
 }
 
 service CatalogService{
-    // rpc getLaptopDetails(DetailsRequest) returns (Laptop);
+    rpc getLaptopDetails(DetailsRequest) returns (Laptop);
     rpc laptopFeed(FeedRequest) returns  (FeedResponse);
 }
