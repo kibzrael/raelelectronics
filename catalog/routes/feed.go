@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"fmt"
+	"math"
 	"strings"
 
 	c "github.com/kibzrael/raelelectronics/common/api/catalog"
@@ -36,16 +37,19 @@ type LaptopCard struct {
 	// Hours
 	BatteryLife float64 `db:"battery_life" json:"battery_life"`
 	Featured    float64
+	Count       int64
 }
 
-func FeedHandler(ctx context.Context, req *c.FeedRequest) (res []*c.LaptopCard, err error) {
+func FeedHandler(ctx context.Context, req *c.FeedRequest) (res []*c.LaptopCard, pages int64, err error) {
 	db := ctx.Value(data.DB_CONTEXT).(*sqlx.DB)
 
 	sort := utils.SortQuery(req)
 	filters := utils.FilterQuery(req)
 
+	page := req.Page
+
 	sql := fmt.Sprintf(`
-		SELECT * FROM
+		SELECT *, count(*) OVER() AS count FROM
 			(SELECT
 				DISTINCT ON (laptops.uid)  laptops.uid,
 				laptops.brand, laptops.name, laptops.thumbnail, laptops.price_min, laptops.price_max, laptops.launched,
@@ -62,8 +66,8 @@ func FeedHandler(ctx context.Context, req *c.FeedRequest) (res []*c.LaptopCard, 
 			%s
 			ORDER BY laptops.uid, memorys.size ASC, storages.capacity ASC) l
 		ORDER BY %s
-		LIMIT 20 OFFSET 0
-	`, filters, sort)
+		LIMIT 20 OFFSET %v
+	`, filters, sort, (page-1)*20)
 
 	rows, err := db.Queryx(sql)
 	if err != nil {
@@ -73,7 +77,7 @@ func FeedHandler(ctx context.Context, req *c.FeedRequest) (res []*c.LaptopCard, 
 	for rows.Next() {
 		laptop := LaptopCard{}
 		if err := rows.StructScan(&laptop); err != nil {
-			return res, err
+			return res, 1, err
 		}
 
 		response := &c.LaptopCard{
@@ -94,6 +98,9 @@ func FeedHandler(ctx context.Context, req *c.FeedRequest) (res []*c.LaptopCard, 
 			BatteryLife: laptop.BatteryLife,
 		}
 		res = append(res, response)
+		if pages == 0 {
+			pages = int64(math.Ceil(float64(laptop.Count) / 20.0))
+		}
 	}
 
 	return

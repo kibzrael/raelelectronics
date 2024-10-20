@@ -37,6 +37,7 @@ func NewTemplateRenderer(e *echo.Echo, resources embed.FS) {
 	tmpl := template.Must(template.New("").Funcs(template.FuncMap{
 		"hasFilter":   hasFilter,
 		"indexFilter": indexFilter,
+		"paginate":    paginate,
 	}).ParseFS(resources, paths...))
 
 	t := newTemplate(tmpl)
@@ -68,4 +69,30 @@ func indexFilter(filters []*c.FeedFilter, key string) string {
 		}
 	}
 	return ""
+}
+
+func paginate(current int64, pages int64) (result []int64) {
+	previous := true
+	for i := int64(1); i <= pages; i++ {
+		include := false
+		if pages <= 8 {
+			include = true
+		} else if i <= 2 || pages-i <= 1 {
+			include = true
+		} else if i == current || i == current-1 || i == current+1 {
+			include = true
+		} else if i < (pages/2)+1 && i > (pages/2)-1 {
+			include = true
+		}
+
+		if include {
+			if !previous {
+				result = append(result, 0)
+			}
+			result = append(result, i)
+		}
+
+		previous = include
+	}
+	return
 }

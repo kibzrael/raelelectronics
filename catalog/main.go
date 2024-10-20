@@ -23,9 +23,11 @@ type CatalogServer struct {
 
 func (s *CatalogServer) LaptopFeed(ctx context.Context, req *c.FeedRequest) (*c.FeedResponse, error) {
 	ctx = context.WithValue(ctx, data.DB_CONTEXT, s.db)
-	laptops, err := routes.FeedHandler(ctx, req)
+	laptops, pages, err := routes.FeedHandler(ctx, req)
 	response := c.FeedResponse{
 		Laptops: laptops,
+		Current: req.Page,
+		Pages:   pages,
 	}
 	return &response, err
 }

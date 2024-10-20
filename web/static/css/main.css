@@ -53,6 +53,18 @@
   @apply w-full overflow-hidden text-ellipsis text-center;
 }
 
+.pagination {
+  @apply flex items-center justify-center gap-2 md:gap-4;
+}
+
+.pagination .page {
+  @apply w-9 h-9 md:w-12 md:h-12 flex items-center justify-center font-caption-lg hover:bg-gray-100 hover:rounded-lg transition-all duration-300;
+}
+
+.pagination .page.active {
+  @apply border-b-2 border-primary text-primary;
+}
+
 .icon-button {
   transition: all 200ms ease-in;
   @apply flex w-10 h-10 hover:bg-black/10 text-gray-700 hover:text-black rounded-full items-center justify-center;

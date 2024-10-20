@@ -5,7 +5,7 @@ go 1.23.2
 require (
 	github.com/google/uuid v1.6.0
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/kibzrael/raelelectronics/common v0.0.0-20241019175925-27d2136b5c08
+	github.com/kibzrael/raelelectronics/common v0.0.0-20241020151533-eb9d917a0bcc
 	github.com/lib/pq v1.10.9
 	google.golang.org/grpc v1.67.1
 )

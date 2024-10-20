@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 
 	c "github.com/kibzrael/raelelectronics/common/api/catalog"
@@ -29,6 +30,9 @@ type Feed struct {
 
 	Sort    string
 	Filters []*c.FeedFilter
+
+	Current int64
+	Pages   int64
 }
 
 func newFeedData() Feed {
@@ -44,6 +48,8 @@ func newFeedData() Feed {
 		BrandFilters: utils.BrandFilters,
 		Sort:         "featured",
 		Filters:      []*c.FeedFilter{},
+		Current:      1,
+		Pages:        1,
 	}
 }
 
@@ -59,16 +65,23 @@ func FeedPageHander(e echo.Context) error {
 	data.Filters = feedFilters(query)
 	var sortQuery c.FeedSort
 	sortQuery, data.Sort = feedSort(query)
+	page, _ := strconv.ParseInt(query.Get("page"), 10, 64)
+	if page == 0 {
+		page = 1
+	}
 
 	response, err := catalog.LaptopFeed(context.Background(), &c.FeedRequest{
 		Sort:    sortQuery,
 		Filters: data.Filters,
+		Page:    page,
 	})
 	if err != nil {
 		log.Println("failed to fetch laptop feed:", err)
 	}
 
 	data.Laptops = response.Laptops
+	data.Current = response.Current
+	data.Pages = response.Pages
 
 	return e.Render(http.StatusOK, "feed.html", data)
 }
@@ -89,7 +102,7 @@ func feedSort(query url.Values) (c.FeedSort, string) {
 func feedFilters(query url.Values) (filters []*c.FeedFilter) {
 	for key, val := range query {
 		values := strings.Trim(strings.Join(val, ","), " ")
-		if values != "" && key != "sort" {
+		if values != "" && key != "sort" && key != "page" {
 			filters = append(filters, &c.FeedFilter{Key: key, Val: values})
 		}
 	}

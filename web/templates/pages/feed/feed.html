@@ -66,6 +66,7 @@
           </div>
           <input id="brandFilter" type="hidden" name="brand" value='{{ indexFilter .Filters "brand"}}' />
           <input id="sortInput" type="hidden" name="sort" value='{{.Sort}}' />
+          <input id="pageInput" type="hidden" name="page" value='1' />
           <button type="submit" class="btn-lg btn-outlined !py-2">Apply Filters</button>
           <section class="flex flex-col gap-4">
             <h4 class="font-body-xl">Price</h4>
@@ -195,6 +196,16 @@
             id="laptopGrid"
             class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 py-4 md:py-8">
             {{range .Laptops}} {{template "laptop_card" .}} {{end}}
+
+            <section class="col-span-1 sm:col-span-2 lg:col-span-3 pagination mt-4 md:mt-8">
+              {{range paginate .Current .Pages}}
+                {{ if . }}
+                  <button class="page {{if eq $.Current . }}active{{end}}" onclick="updatePage('{{.}}')">{{.}}</button>
+                {{ else }}
+                  <div class="px-2 md:px-4">...</div>
+                {{ end }}
+              {{ end }}
+            </section>
           </section>
         </div>
       </div>
@@ -223,6 +234,11 @@
 
     function handleSort(){
       document.getElementById("sortInput").value = document.getElementById("sortSelect").value
+      document.getElementById("filtersForm").requestSubmit()
+    }
+
+    function updatePage(page){
+      document.getElementById("pageInput").value = page
       document.getElementById("filtersForm").requestSubmit()
     }
   </script>
