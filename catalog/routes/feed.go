@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"math"
-	"strings"
 
 	c "github.com/kibzrael/raelelectronics/common/api/catalog"
 
@@ -12,33 +11,6 @@ import (
 	"github.com/kibzrael/raelelectronics/catalog/data"
 	"github.com/kibzrael/raelelectronics/catalog/utils"
 )
-
-type LaptopCard struct {
-	Uid   string `json:"uid"`
-	Brand string `json:"brand"`
-	Name  string `json:"name"`
-	// Launched date YYYY-MM-DD
-	Launched  string
-	Thumbnail string `json:"thumbnail"`
-	// Price in dollars
-	PriceMin float64 `db:"price_min"`
-	// Price in dollars
-	PriceMax float64 `db:"price_max"`
-	Colors   string  `json:"colors"`
-	Size     float64 `json:"size"`
-	Cpu      string  `json:"cpu"`
-	Cores    int64   `json:"cores"`
-	// Megahertz (MHz)
-	BaseSpeed float64 `json:"base_speed" db:"base_speed"`
-	// Gigabytes (GB)
-	Memory int64 `json:"memory"`
-	// Gigabytes (GB)
-	Storage int64 `json:"storage"`
-	// Hours
-	BatteryLife float64 `db:"battery_life" json:"battery_life"`
-	Featured    float64
-	Count       int64
-}
 
 func FeedHandler(ctx context.Context, req *c.FeedRequest) (res []*c.LaptopCard, pages int64, err error) {
 	db := ctx.Value(data.DB_CONTEXT).(*sqlx.DB)
@@ -75,29 +47,13 @@ func FeedHandler(ctx context.Context, req *c.FeedRequest) (res []*c.LaptopCard, 
 	}
 
 	for rows.Next() {
-		laptop := LaptopCard{}
+		laptop := data.LaptopCard{}
 		if err := rows.StructScan(&laptop); err != nil {
 			return res, 1, err
 		}
 
-		response := &c.LaptopCard{
-			Uid:         laptop.Uid,
-			Name:        laptop.Name,
-			Brand:       laptop.Brand,
-			Thumbnail:   laptop.Thumbnail,
-			Launched:    laptop.Launched,
-			PriceMin:    laptop.PriceMin,
-			PriceMax:    laptop.PriceMax,
-			Colors:      strings.Split(laptop.Colors, ","),
-			Size:        laptop.Size,
-			Cpu:         laptop.Cpu,
-			Cores:       laptop.Cores,
-			BaseSpeed:   laptop.BaseSpeed,
-			Memory:      laptop.Memory,
-			Storage:     laptop.Storage,
-			BatteryLife: laptop.BatteryLife,
-		}
-		res = append(res, response)
+		response := utils.ParseLaptopCard(laptop)
+		res = append(res, &response)
 		if pages == 0 {
 			pages = int64(math.Ceil(float64(laptop.Count) / 20.0))
 		}

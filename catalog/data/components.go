@@ -77,6 +77,16 @@ func FetchMotherboards(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
 	wg.Done()
 }
 
+func FetchBatteries(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
+	rows, _ := db.Queryx("SELECT * FROM batteries WHERE laptop=$1", l.Uid)
+	for rows.Next() {
+		var battery Battery
+		rows.StructScan(&battery)
+		l.Battery = append(l.Battery, battery)
+	}
+	wg.Done()
+}
+
 func FetchChassis(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
 	portsWg := sync.WaitGroup{}
 	rows, _ := db.Queryx("SELECT * FROM chassis WHERE laptop=$1", l.Uid)

@@ -32,6 +32,12 @@ func (s *CatalogServer) LaptopFeed(ctx context.Context, req *c.FeedRequest) (*c.
 	return &response, err
 }
 
+func (s *CatalogServer) GetLaptopDetails(ctx context.Context, req *c.DetailsRequest) (*c.Laptop, error) {
+	ctx = context.WithValue(ctx, data.DB_CONTEXT, s.db)
+	laptop, err := routes.DetailsHandler(ctx, req)
+	return laptop, err
+}
+
 func main() {
 
 	db, err := sqlx.Connect("postgres", fmt.Sprintf("postgres://%s:%s@%s:5432/%s?sslmode=disable", data.DB_USER, data.DB_PASSWORD, data.DB_HOST, data.DB_NAME))

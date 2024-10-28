@@ -168,9 +168,9 @@ type CPU struct {
 	Lithography uint64 `json:"lithography,string"`
 	// Megabytes (MB)
 	Cache float64 `json:"cache,string"`
-	// Megahertz (MHz)
+	// Gigahertz (GHz)
 	BaseSpeed float64 `json:"base_speed,string" db:"base_speed"`
-	// Megahertz (MHz)
+	// Gigahertz (GHz)
 	BoostSpeed      float64   `json:"boost_speed,string" db:"boost_speed"`
 	Cores           int64     `json:"cores,string"`
 	Tdp             int64     `json:"tdp,string"`
@@ -487,4 +487,31 @@ func (l *Laptop) Save(ctx context.Context) error {
 	}
 	err = tx.Commit()
 	return err
+}
+
+type LaptopCard struct {
+	Uid   string `json:"uid"`
+	Brand string `json:"brand"`
+	Name  string `json:"name"`
+	// Launched date YYYY-MM-DD
+	Launched  string
+	Thumbnail string `json:"thumbnail"`
+	// Price in dollars
+	PriceMin float64 `db:"price_min"`
+	// Price in dollars
+	PriceMax float64 `db:"price_max"`
+	Colors   string  `json:"colors"`
+	Size     float64 `json:"size"`
+	Cpu      string  `json:"cpu"`
+	Cores    int64   `json:"cores"`
+	// Megahertz (MHz)
+	BaseSpeed float64 `json:"base_speed" db:"base_speed"`
+	// Gigabytes (GB)
+	Memory int64 `json:"memory"`
+	// Gigabytes (GB)
+	Storage int64 `json:"storage"`
+	// Hours
+	BatteryLife float64 `db:"battery_life" json:"battery_life"`
+	Featured    float64
+	Count       int64
 }
