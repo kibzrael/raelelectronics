@@ -78,3 +78,17 @@ var BrandFilters = []BrandFilter{
 	{Logo: "/static/images/brands/acer.svg", Name: "Acer"},
 	{Logo: "/static/images/brands/alienware.svg", Name: "Alienware"},
 }
+
+var ColorMaps = map[string]string{
+	"Silver":   "#CFCFCF",
+	"Black":    "#000000",
+	"White":    "#FFFFFF",
+	"Gray":     "#717378",
+	"Gold":     "#FFBB00",
+	"Blue":     "#005AFF",
+	"Orange":   "#FF9900",
+	"Green":    "#6EC531",
+	"Brown":    "#856256",
+	"Graphite": "#41424C",
+	"Red":      "#E31937",
+}

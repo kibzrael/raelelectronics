@@ -9,6 +9,7 @@ import (
 	"github.com/kibzrael/raelelectronics/web/services"
 	"github.com/kibzrael/raelelectronics/web/templates"
 	"github.com/kibzrael/raelelectronics/web/templates/pages"
+	"github.com/kibzrael/raelelectronics/web/templates/pages/details"
 	"github.com/kibzrael/raelelectronics/web/templates/pages/feed"
 	"github.com/labstack/echo/v4"
 	_ "github.com/lib/pq"
@@ -31,7 +32,7 @@ func main() {
 
 	e.GET("/", pages.LandingPageHandler)
 	e.GET("/feed", feed.FeedPageHander)
-	// e.GET("/l/:uid", details.DetailsPageHander)
+	e.GET("/l/:uid", details.DetailsPageHander)
 
 	fmt.Println("Web is listening on port", os.Getenv("PORT"))
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))

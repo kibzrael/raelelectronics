@@ -4,7 +4,7 @@ go 1.23.2
 
 require (
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/kibzrael/raelelectronics/common v0.0.0-20241020151533-eb9d917a0bcc
+	github.com/kibzrael/raelelectronics/common v0.0.0-20241020221920-b8d93ae6f700
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/lib/pq v1.10.9
 	google.golang.org/grpc v1.67.1

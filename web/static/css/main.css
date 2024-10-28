@@ -53,6 +53,40 @@
   @apply w-full overflow-hidden text-ellipsis text-center;
 }
 
+.specification {
+  @apply flex-1 p-4 rounded-xl border-2 border-gray-300;
+}
+
+.specification:has(input[type="radio"]:checked) {
+  @apply border-primary;
+}
+.config1 .specification {
+  @apply border-none cursor-default px-0 py-2 md:py-4;
+}
+.config1 .specification input[type="radio"] {
+  @apply hidden;
+}
+
+.configs {
+  @apply flex flex-wrap gap-4 md:gap-8;
+}
+
+.specification .title {
+  @apply flex items-center justify-between gap-4;
+}
+
+.specification h5 {
+  @apply whitespace-nowrap font-h6 mb-2;
+}
+
+.specification p {
+  @apply font-body-md text-gray-500;
+}
+
+.specification input[type="radio"] {
+  @apply h-6 w-6;
+}
+
 .pagination {
   @apply flex items-center justify-center gap-2 md:gap-4;
 }
@@ -70,10 +104,21 @@
   @apply flex w-10 h-10 hover:bg-black/10 text-gray-700 hover:text-black rounded-full items-center justify-center;
 }
 
+.icon-button.lg {
+  @apply w-12 h-12;
+}
+
 .icon-button .material-symbols-rounded {
   @apply text-3xl;
 }
 
+.icon-button.lg .material-symbols-rounded {
+  @apply text-4xl;
+}
+
+.btn-md {
+  @apply py-2 px-4 rounded-lg font-button-lg flex items-center gap-3 justify-center transition-all duration-300;
+}
 .btn-lg {
   @apply p-4 rounded-lg font-button-lg flex items-center gap-3 justify-center transition-all duration-300;
 }

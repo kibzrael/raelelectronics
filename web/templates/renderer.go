@@ -6,10 +6,12 @@ import (
 	"io"
 	"io/fs"
 	"log"
+	"math"
 	"strings"
 	"text/template"
 
 	c "github.com/kibzrael/raelelectronics/common/api/catalog"
+	"github.com/kibzrael/raelelectronics/web/utils"
 	"github.com/labstack/echo/v4"
 )
 
@@ -38,6 +40,9 @@ func NewTemplateRenderer(e *echo.Echo, resources embed.FS) {
 		"hasFilter":   hasFilter,
 		"indexFilter": indexFilter,
 		"paginate":    paginate,
+		"colorHex":    colorHex,
+		"div":         div,
+		"divInt":      divInt,
 	}).ParseFS(resources, paths...))
 
 	t := newTemplate(tmpl)
@@ -95,4 +100,33 @@ func paginate(current int64, pages int64) (result []int64) {
 		previous = include
 	}
 	return
+}
+
+func colorHex(name string) string {
+	for key, hex := range utils.ColorMaps {
+		if strings.Contains(strings.ToLower(name), strings.ToLower(key)) {
+			return hex
+		}
+	}
+	return "#CCCAC9"
+}
+
+func div(value any, divisor int64) float64 {
+	switch val := value.(type) {
+	case int64:
+		return float64(val) / float64(divisor)
+	case float64:
+		return val / float64(divisor)
+	}
+	return 0
+}
+
+func divInt(value any, divisor int64) int64 {
+	switch val := value.(type) {
+	case int64:
+		return int64(math.Floor(float64(val) / float64(divisor)))
+	case float64:
+		return int64(math.Floor(val / float64(divisor)))
+	}
+	return 0
 }
