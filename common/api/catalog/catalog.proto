@@ -8,6 +8,11 @@ message DetailsRequest{
     string uid = 1;
 }
 
+message DetailsResponse{
+    Laptop laptop = 1;
+    repeated LaptopCard related = 2;
+}
+
 message CPU{
     string Uid = 1;
     string Model = 2;
@@ -168,6 +173,6 @@ message FeedResponse{
 }
 
 service CatalogService{
-    rpc getLaptopDetails(DetailsRequest) returns (Laptop);
+    rpc getLaptopDetails(DetailsRequest) returns (DetailsResponse);
     rpc laptopFeed(FeedRequest) returns  (FeedResponse);
 }

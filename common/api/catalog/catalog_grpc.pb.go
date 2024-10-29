@@ -27,7 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CatalogServiceClient interface {
-	GetLaptopDetails(ctx context.Context, in *DetailsRequest, opts ...grpc.CallOption) (*Laptop, error)
+	GetLaptopDetails(ctx context.Context, in *DetailsRequest, opts ...grpc.CallOption) (*DetailsResponse, error)
 	LaptopFeed(ctx context.Context, in *FeedRequest, opts ...grpc.CallOption) (*FeedResponse, error)
 }
 
@@ -39,9 +39,9 @@ func NewCatalogServiceClient(cc grpc.ClientConnInterface) CatalogServiceClient {
 	return &catalogServiceClient{cc}
 }
 
-func (c *catalogServiceClient) GetLaptopDetails(ctx context.Context, in *DetailsRequest, opts ...grpc.CallOption) (*Laptop, error) {
+func (c *catalogServiceClient) GetLaptopDetails(ctx context.Context, in *DetailsRequest, opts ...grpc.CallOption) (*DetailsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Laptop)
+	out := new(DetailsResponse)
 	err := c.cc.Invoke(ctx, CatalogService_GetLaptopDetails_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (c *catalogServiceClient) LaptopFeed(ctx context.Context, in *FeedRequest, 
 // All implementations must embed UnimplementedCatalogServiceServer
 // for forward compatibility.
 type CatalogServiceServer interface {
-	GetLaptopDetails(context.Context, *DetailsRequest) (*Laptop, error)
+	GetLaptopDetails(context.Context, *DetailsRequest) (*DetailsResponse, error)
 	LaptopFeed(context.Context, *FeedRequest) (*FeedResponse, error)
 	mustEmbedUnimplementedCatalogServiceServer()
 }
@@ -75,7 +75,7 @@ type CatalogServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedCatalogServiceServer struct{}
 
-func (UnimplementedCatalogServiceServer) GetLaptopDetails(context.Context, *DetailsRequest) (*Laptop, error) {
+func (UnimplementedCatalogServiceServer) GetLaptopDetails(context.Context, *DetailsRequest) (*DetailsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLaptopDetails not implemented")
 }
 func (UnimplementedCatalogServiceServer) LaptopFeed(context.Context, *FeedRequest) (*FeedResponse, error) {
