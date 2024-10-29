@@ -8,7 +8,7 @@ import (
 )
 
 func FetchCpus(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
-	rows, _ := db.Queryx("SELECT * FROM cpus WHERE laptop=$1", l.Uid)
+	rows, _ := db.Queryx("SELECT * FROM cpus WHERE laptop=$1 ORDER BY cpus.model ASC", l.Uid)
 	for rows.Next() {
 		var cpu CPU
 		rows.StructScan(&cpu)
@@ -18,7 +18,7 @@ func FetchCpus(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
 }
 
 func FetchGpus(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
-	rows, _ := db.Queryx("SELECT * FROM gpus WHERE laptop=$1", l.Uid)
+	rows, _ := db.Queryx("SELECT * FROM gpus WHERE laptop=$1 ORDER BY gpus.model ASC", l.Uid)
 	for rows.Next() {
 		var gpu GPU
 		rows.StructScan(&gpu)
@@ -28,7 +28,7 @@ func FetchGpus(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
 }
 
 func FetchDisplays(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
-	rows, _ := db.Queryx("SELECT * FROM displays WHERE laptop=$1", l.Uid)
+	rows, _ := db.Queryx("SELECT * FROM displays WHERE laptop=$1 ORDER BY displays.size ASC", l.Uid)
 	for rows.Next() {
 		var display Display
 		rows.StructScan(&display)
@@ -38,7 +38,7 @@ func FetchDisplays(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
 }
 
 func FetchMemorys(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
-	rows, _ := db.Queryx("SELECT * FROM memorys WHERE laptop=$1", l.Uid)
+	rows, _ := db.Queryx("SELECT * FROM memorys WHERE laptop=$1 ORDER BY memorys.size ASC", l.Uid)
 	for rows.Next() {
 		var memory Memory
 		rows.StructScan(&memory)
@@ -48,7 +48,7 @@ func FetchMemorys(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
 }
 
 func FetchStorages(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
-	rows, _ := db.Queryx("SELECT * FROM storages WHERE laptop=$1", l.Uid)
+	rows, _ := db.Queryx("SELECT * FROM storages WHERE laptop=$1 ORDER BY storages.capacity ASC", l.Uid)
 	for rows.Next() {
 		var storage Storage
 		rows.StructScan(&storage)
@@ -78,7 +78,7 @@ func FetchMotherboards(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
 }
 
 func FetchBatteries(wg *sync.WaitGroup, db *sqlx.DB, l *Laptop) {
-	rows, _ := db.Queryx("SELECT * FROM batteries WHERE laptop=$1", l.Uid)
+	rows, _ := db.Queryx("SELECT * FROM batteries WHERE laptop=$1 ORDER BY batteries.capacity ASC", l.Uid)
 	for rows.Next() {
 		var battery Battery
 		rows.StructScan(&battery)

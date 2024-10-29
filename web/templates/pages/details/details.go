@@ -12,12 +12,14 @@ import (
 )
 
 type Details struct {
-	Laptop *c.Laptop
+	Laptop  *c.Laptop
+	Related []*c.LaptopCard
 }
 
 func newDetailsData() Details {
 	return Details{
-		Laptop: &c.Laptop{},
+		Laptop:  &c.Laptop{},
+		Related: []*c.LaptopCard{},
 	}
 }
 
@@ -28,13 +30,14 @@ func DetailsPageHander(e echo.Context) error {
 
 	catalog := c.NewCatalogServiceClient(conn)
 
-	laptop, err := catalog.GetLaptopDetails(context.Background(), &c.DetailsRequest{Uid: uid})
+	response, err := catalog.GetLaptopDetails(context.Background(), &c.DetailsRequest{Uid: uid})
 	if err != nil {
 		log.Println("failed to fetch laptop:", err)
 	}
 
 	data := newDetailsData()
-	data.Laptop = laptop
+	data.Laptop = response.Laptop
+	data.Related = response.Related
 
 	return e.Render(http.StatusOK, "details.html", data)
 }

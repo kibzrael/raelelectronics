@@ -43,6 +43,7 @@ func NewTemplateRenderer(e *echo.Echo, resources embed.FS) {
 		"colorHex":    colorHex,
 		"div":         div,
 		"divInt":      divInt,
+		"storage":     storage,
 	}).ParseFS(resources, paths...))
 
 	t := newTemplate(tmpl)
@@ -129,4 +130,12 @@ func divInt(value any, divisor int64) int64 {
 		return int64(math.Floor(val / float64(divisor)))
 	}
 	return 0
+}
+
+func storage(value int64) string {
+	if value < 1024 {
+		return fmt.Sprintf("%vGB", value)
+	}
+	tb := math.Floor(float64(value / 1000))
+	return fmt.Sprintf("%vTB", int64(tb))
 }

@@ -32,10 +32,10 @@ func (s *CatalogServer) LaptopFeed(ctx context.Context, req *c.FeedRequest) (*c.
 	return &response, err
 }
 
-func (s *CatalogServer) GetLaptopDetails(ctx context.Context, req *c.DetailsRequest) (*c.Laptop, error) {
+func (s *CatalogServer) GetLaptopDetails(ctx context.Context, req *c.DetailsRequest) (*c.DetailsResponse, error) {
 	ctx = context.WithValue(ctx, data.DB_CONTEXT, s.db)
-	laptop, err := routes.DetailsHandler(ctx, req)
-	return laptop, err
+	response, err := routes.DetailsHandler(ctx, req)
+	return response, err
 }
 
 func main() {
