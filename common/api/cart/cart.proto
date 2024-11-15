@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+option go_package = "github.com/kibzrael/raelelectronics/common/api/catalog";
+
+package cart;
+
+message AddToCartRequest{
+    string uid = 1;
+    string user = 2;
+    int64 quantity = 3;
+}
+
+message AddToCartResponse{
+    bool success = 1;
+    string message = 2;
+}
+
+message RemoveFromCartRequest{
+    string uid = 1;
+    string user = 2;
+}
+
+message RemoveFromCartResponse{
+    bool success = 1;
+    string message = 2;
+}
+
+message GetCartRequest{
+    string uid = 1;
+    string user = 2;
+}
+
+message GetCartResponse{
+    repeated CartItem cart = 1;
+}
+
+message CartItem{
+    string Uid = 1;
+    string Laptop = 2;
+    int64 Quantity = 3;
+
+    string CPU = 4;
+    string GPU = 5;
+    string Display = 6;
+    string Memory = 7;
+    string Storage = 8;
+    string WirelessCard = 9;
+    string Motherboard = 10;
+    string Chasis = 11;
+    string Battery = 12;
+}
+
+// Wishlist
+
+message AddToWishlistRequest{
+    string uid = 1;
+    string user = 2;
+}
+
+message AddToWishlistResponse{
+    bool success = 1;
+    string message = 2;
+}
+
+message RemoveFromWishlistRequest{
+    string uid = 1;
+    string user = 2;
+}
+
+message RemoveFromWishlistResponse{
+    bool success = 1;
+    string message = 2;
+}
+
+message GetWishlistRequest{
+    string uid = 1;
+    string user = 2;
+}
+
+message GetWishlistResponse{
+    repeated WishlistItem wishlist = 1;
+}
+
+message WishlistItem{
+    string uid = 1;
+    string laptop = 2;
+}
+
+service CartService{
+    rpc AddToCart(AddToCartRequest) returns (AddToCartResponse);
+    rpc RemoveFromCart(RemoveFromCartRequest) returns (RemoveFromCartResponse);
+    rpc GetCart(GetCartRequest) returns (GetCartResponse);
+
+    // Wishlist
+    rpc AddToWishlist(AddToWishlistRequest) returns (AddToWishlistResponse);
+    rpc RemoveFromWishlist(RemoveFromWishlistRequest) returns (RemoveFromWishlistResponse);
+    rpc GetWishlist(GetWishlistRequest) returns (GetWishlistResponse);
+}
