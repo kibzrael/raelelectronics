@@ -76,13 +76,14 @@ func fetchFeatured(db *sqlx.DB, data *LandingPage, wg *sync.WaitGroup) {
 				laptops.name, laptops.thumbnail, laptops.price_min,
 				displays.size, concat_ws(' ', cpus.architecture, cpus.model) as cpu,
 				chassis.colors, memorys.size as memory, storages.capacity as storage,
-				((memorys.size + (cpus.cores * cpus.base_speed)) / laptops.price_min) as featured
+				((memorys.speed + (cpus.cores * cpus.base_speed * cpus.cache) + (displays.srgb * displays.v_resolution) + (batteries.capacity * batteries.life)) / (laptops.price_min * cpus.lithography)) as featured
 			FROM laptops
 				LEFT JOIN chassis on laptops.uid = chassis.laptop
 				LEFT JOIN displays on laptops.uid = displays.laptop
 				LEFT JOIN cpus on laptops.uid = cpus.laptop
 				LEFT JOIN memorys on laptops.uid = memorys.laptop
 				LEFT JOIN storages on laptops.uid = storages.laptop
+				LEFT JOIN batteries on laptops.uid = batteries.laptop
 			ORDER BY laptops.uid, memorys.size ASC, storages.capacity ASC) l
 		ORDER BY l.featured DESC
 		LIMIT 4

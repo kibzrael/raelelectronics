@@ -27,7 +27,7 @@ func FeedHandler(ctx context.Context, req *c.FeedRequest) (res []*c.LaptopCard, 
 				laptops.brand, laptops.name, laptops.thumbnail, laptops.price_min, laptops.price_max, laptops.launched,
 				displays.size, chassis.colors, concat_ws(' ', cpus.architecture, cpus.model) as cpu, cpus.cores,
 				cpus.base_speed, memorys.size as memory, storages.capacity as storage, batteries.life as battery_life,
-				((memorys.size + (cpus.cores * cpus.base_speed)) / laptops.price_min) as featured
+				((memorys.speed + (cpus.cores * cpus.base_speed * cpus.cache) + (displays.srgb * displays.v_resolution) + (batteries.capacity * batteries.life)) / (laptops.price_min * cpus.lithography)) as featured
 			FROM laptops
 				LEFT JOIN chassis on laptops.uid = chassis.laptop
 				LEFT JOIN displays on laptops.uid = displays.laptop

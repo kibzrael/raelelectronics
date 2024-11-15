@@ -62,7 +62,7 @@
           hx-replace-url="true">
           <div class="flex items-center justify-between">
             <h3 class="font-h5">Filters</h3>
-            <button hx-get="/feed" type="button" class="btn-lg btn-text">Clear all</button>
+            <button hx-get="/feed" type="button" class="btn-md btn-text">Clear all</button>
           </div>
           <input id="brandFilter" type="hidden" name="brand" value='{{ indexFilter .Filters "brand"}}' />
           <input id="sortInput" type="hidden" name="sort" value='{{.Sort}}' />

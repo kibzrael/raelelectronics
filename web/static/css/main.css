@@ -117,22 +117,27 @@
 }
 
 .btn-md {
-  @apply py-2 px-4 rounded-lg font-button-lg flex items-center gap-3 justify-center transition-all duration-300;
+  @apply py-2 px-4 rounded-lg font-button-lg flex items-center gap-3 justify-center transition-all duration-500;
 }
 .btn-lg {
-  @apply p-4 rounded-lg font-button-lg flex items-center gap-3 justify-center transition-all duration-300;
+  @apply p-4 rounded-lg font-button-lg flex items-center gap-3 justify-center transition-all duration-500;
 }
 
 .btn-primary {
-  @apply bg-primary text-white hover:brightness-90;
+  @apply bg-primary text-white hover:shadow-primary hover:-translate-y-[3px];
 }
 
 .btn-secondary {
-  @apply bg-secondary text-white hover:brightness-90;
+  @apply bg-secondary text-white hover:shadow-secondary hover:-translate-y-[3px];
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+  box-shadow: 0 10px 20px -10px var(--tw-shadow-color);
 }
 
 .btn-text {
-  @apply text-primary hover:text-primary-500;
+  @apply text-primary hover:bg-primary-25;
 }
 
 .btn-outlined {
