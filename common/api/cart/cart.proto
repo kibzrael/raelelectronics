@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/kibzrael/raelelectronics/common/api/catalog";
+option go_package = "github.com/kibzrael/raelelectronics/common/api/cart";
 
 package cart;
 
