@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option go_package = "github.com/kibzrael/raelelectronics/common/api/auth";
+
+package auth;
+
+
+message CreateTokenRequest{
+    string ip = 1;
+    string userAgent = 2;
+}
+
+message CreateTokenResponse{
+    string user = 1;
+    string token = 2;
+}
+
+message ValidateTokenRequest{
+    string token = 1;
+}
+
+message ValidateTokenResponse{
+    string user = 1;
+    bool valid = 2;
+    string newToken = 3;
+}
+
+service AuthService {
+    rpc CreateToken(CreateTokenRequest) returns (CreateTokenResponse);
+    rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+}
