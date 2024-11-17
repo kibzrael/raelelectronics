@@ -63,7 +63,7 @@ func LoginHandler(ctx context.Context, res http.ResponseWriter, req *http.Reques
 	db.Exec("UPDATE users SET logged_at=$1 WHERE uid=$2", loggedAt, user.Uid)
 	user.LoggedAt = &loggedAt
 
-	user.Password = ""
+	user.Password = nil
 	response := map[string]any{"message": "login successful", "user": user}
 	utils.JsonResponse(&res, response)
 }

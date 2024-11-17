@@ -27,6 +27,7 @@ services:
       - 8001:8001
     env_file:
       - ./db.env
+      - ./auth.env
     depends_on:
       - db
     volumes:

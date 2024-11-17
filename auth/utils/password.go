@@ -7,8 +7,11 @@ func HashPassword(password string) (string, error) {
 	return string(b), err
 }
 
-func VerifyPassword(hash string, password string) bool {
-	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)); err != nil {
+func VerifyPassword(hash *string, password string) bool {
+	if hash == nil {
+		return false
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(*hash), []byte(password)); err != nil {
 		return false
 	}
 	return true
