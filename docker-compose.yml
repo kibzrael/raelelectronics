@@ -50,13 +50,20 @@ services:
     networks:
       - backend
   cart:
-    build: ./cart
+    build:
+      context: ./cart
+      args:
+        PORT: 8003
     ports:
       - 8003:8003
+    env_file:
+      - ./db.env
     depends_on:
       - db
     volumes:
       - ./cart:/app
+    networks:
+      - backend
   payment:
     build: ./payment
     ports:
