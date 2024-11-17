@@ -61,12 +61,8 @@
                   >up to <span>${{.PriceMax}}</span></span
                 >
               </div>
-              <button
-                class="icon-button lg group-hover:text-secondary transition-all duration-500">
-                <span class="material-symbols-rounded mt-1 -mb-1"
-                  >favorite</span
-                >
-              </button>
+              {{template "wishlist_button" dict "Laptop" .Uid "Wishlist" false
+              }}
             </div>
 
             <button class="btn-md btn-primary">Buy Now</button>

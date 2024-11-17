@@ -27,10 +27,7 @@
     </span>
   </div>
   <div class="flex justify-between items-center">
-    <button
-      class="icon-button group-hover:text-secondary transition-all duration-500">
-      <span class="material-symbols-rounded mt-1 -mb-1">favorite</span>
-    </button>
+    {{template "wishlist_button" dict "Laptop" .Uid "Wishlist" false}}
     <span class="text-gray-500 font-body-sm"
       >from
       <span

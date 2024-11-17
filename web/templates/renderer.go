@@ -2,6 +2,7 @@ package templates
 
 import (
 	"embed"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -44,6 +45,7 @@ func NewTemplateRenderer(e *echo.Echo, resources embed.FS) {
 		"div":         div,
 		"divInt":      divInt,
 		"storage":     storage,
+		"dict":        dict,
 	}).ParseFS(resources, paths...))
 
 	t := newTemplate(tmpl)
@@ -138,4 +140,19 @@ func storage(value int64) string {
 	}
 	tb := math.Floor(float64(value / 1000))
 	return fmt.Sprintf("%vTB", int64(tb))
+}
+
+func dict(values ...interface{}) (map[string]interface{}, error) {
+	if len(values)%2 != 0 {
+		return nil, errors.New("invalid dict call")
+	}
+	dict := make(map[string]interface{}, len(values)/2)
+	for i := 0; i < len(values); i += 2 {
+		key, ok := values[i].(string)
+		if !ok {
+			return nil, errors.New("dict keys must be strings")
+		}
+		dict[key] = values[i+1]
+	}
+	return dict, nil
 }

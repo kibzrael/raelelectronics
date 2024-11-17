@@ -2,7 +2,6 @@ package routes
 
 import (
 	"context"
-	"log"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -18,7 +17,6 @@ func AddToWishlistHandler(ctx context.Context, req *c.AddToWishlistRequest) (*c.
 		Laptop: req.Uid,
 		User:   req.User,
 	}
-	log.Println(item)
 	_, err := db.NamedExec("INSERT INTO wishlist (uid, laptop, \"user\") VALUES(:uid, :laptop, :user)", &item)
 	if err != nil {
 		return &c.AddToWishlistResponse{Success: false, Message: err.Error()}, err

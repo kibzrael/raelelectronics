@@ -1,0 +1,18 @@
+{{define "wishlist_button"}}
+<button
+  class="icon-button lg transition-all duration-500 pt-[5px]"
+  hx-on:click="event.preventDefault()"
+  hx-post="/api/wishlist/{{.Laptop}}/{{not .Wishlist}}"
+  hx-swap="outerHTML">
+  {{if .Wishlist}}
+  <span
+    class="material-symbols-rounded text-secondary"
+    style="font-variation-settings: 'FILL' 1"
+    >favorite</span
+  >
+  {{else}}
+  <span class="material-symbols-rounded">favorite</span>
+  {{end}}
+</button>
+
+{{end}}
